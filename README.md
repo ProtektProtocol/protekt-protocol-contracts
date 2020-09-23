@@ -3,7 +3,7 @@ Protekt Protocol puts crypto to work insuring users against hacks, bugs, and exp
 
 Along with being an active DeFi protocol, an allocation of treasury reserves will be used to continually audit and secure other DeFi protocols, so the ecosystem can all grow safely together.
 
-![pToken Image](/img/banner.png)
+![Banner](/img/banner.jpg)
 
 Building on the work of awesome projects like [Nexus Mutual](https://nexusmutual.io/), [DeFi Score](https://defiscore.io/), [Aave's Safety Modules](https://docs.aave.com/aavenomics/safety-module), and others, we believe that large vulnerabilities are the **biggest risk to a thriving DeFi community** over the next few years, especially as new money legos are created and remixed weekly. As more capital flows into the space, token holders need signaling and assurance of the projects they can trust and commit capital as well as recapitalization if a [Shortfall Event](https://docs.aave.com/aavenomics/terminology#shortfall-event-se) occurs.
 
