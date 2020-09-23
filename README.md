@@ -1,7 +1,5 @@
 # Protekt Protocol
-Protekt Protocol puts crypto to work insuring users against hacks, bugs, and exploits of any DeFi protocol. Its goal is to support and catalyze the growth of the DeFi ecosystem by protecting users from getting rekt. Along with being an active DeFi protocol, an allocation of treasury reserves will be used to continually audit and secure other DeFi protocols, so the ecosystem can all grow safely together. Think of Protekt as a warm, fuzzy blanket around your DeFi holdings and yield farming activities to keep you safe at night!
-
-Protekt Protol is live on mainnet and can be reach here.
+Protekt Protocol puts crypto to work insuring users against hacks, bugs, and exploits of any DeFi protocol. Its goal is to support and catalyze the growth of the DeFi ecosystem by protecting users from getting rekt. Along with being an active DeFi protocol, an allocation of treasury reserves will be used to continually audit and secure other DeFi protocols, so the ecosystem can all grow safely together.
 
 <Thriving, safe DeFi Graphic>
 
@@ -10,12 +8,12 @@ Building on the work of awesome projects like [Nexus Mutual](https://nexusmutual
 To fulfill this need, Protekt Protocol introduces a new innovative system of wrapped tokens with built in coverage, staking pools with shield farming incentives, and finally a liquidation pool owned and governed by a DAO.
 
 ## How it works
-### pTokens, like cTokens with built in cover
+### pTokens, like cTokens but with cover
 Inspired by Aave, Compound, yearn, rDai, Maker, and others, and powered by Balancer, users can deposit cTokens (or any pool share token, but we’re starting with Compound for now) and get pTokens in return. The pToken represents your cToken 1:1 plus 90% of the COMP farming rewards, while the other 10% goes to the Protekt Pool for that cToken lending pool. pToken can be minted at any time and redeemed for your cTokens + adjusted COMP rewards at any time.
 
 **In short, by holding a pToken, you pay 10% of your yield farming returns to be insured against a hacks, bugs, and exploits of the underlying pool.**
 
-<Graphic>
+![pToken Image](/img/pTokenDiagram.png)
 
 ### Protekt Pools
 Protekt Pools can be set up on top of ANY DeFi pool, whether it's a lending pool, market making pool, staking pool, etc. We call the underlying pool the "Target Pool". Protekt Pools earn fees from the Target Pool, primarily by farming protocol incentives. Stakers can add value to the Protekt Pool to cover the liability of the Target Pool from a Shortfall event in return for earning a portion of the fees as well as shield farming PKT token incentives.
