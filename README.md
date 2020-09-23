@@ -1,19 +1,20 @@
 # Protekt Protocol
-Protekt Protocol puts crypto to work insuring users against hacks, bugs, and exploits of any DeFi protocol. Just as Uniswap allows any token to have a swap market, Protekt allows any pooled capital to be insured by stakers. Its goal is to support and catalyze the growth of the DeFi ecosystem by protecting users from getting rekt.
+Protekt Protocol puts crypto to work insuring users against hacks, bugs, and exploits of any DeFi protocol. Just as [Uniswap](https://uniswap.org/) allows any token to have a spot market, Protekt allows any pooled capital to be insured by stakers. The goal is to support and catalyze the growth of the DeFi ecosystem by protecting users from getting rekt.
 
-Along with being an active DeFi protocol, an allocation of treasury reserves will be used to continually audit and secure other DeFi protocols, so the ecosystem can all grow safely together.
+Along with being a smart contract protocol, an allocation of protocol treasury will be used for grants to continually audit and secure other DeFi moeny legos, so the ecosystem can all grow safely together!
 
 ![Banner](/img/banner.jpg)
 
-Building on the work of awesome projects like [Nexus Mutual](https://nexusmutual.io/), [DeFi Score](https://defiscore.io/), [Aave's Safety Modules](https://docs.aave.com/aavenomics/safety-module), and others, we believe that large vulnerabilities are the **biggest risk to a thriving DeFi community** over the next few years, especially as new money legos are created and remixed weekly. As more capital flows into the space, token holders need signaling and assurance of the projects they can trust and commit capital as well as recapitalization if a [Shortfall Event](https://docs.aave.com/aavenomics/terminology#shortfall-event-se) occurs.
+Building on the work of awesome projects like [DeFi Score](https://defiscore.io/), [Nexus Mutual](https://nexusmutual.io/), [Aave's Safety Modules](https://docs.aave.com/aavenomics/safety-module), and others, we believe that large vulnerabilities are the **biggest risk to a thriving DeFi community** over the next few years. Especially as new money legos are created and remixed weekly, smart contract bugs, collateral failures, centralization risk, and oracle risk are a massive concern and bottleneck to more capital flowing into the space. New entrants need signaling and assurance of the projects they can trust and commit capital as well as recapitalization if a [Shortfall Event](https://docs.aave.com/aavenomics/terminology#shortfall-event-se) occurs.
 
 To fulfill this need, Protekt Protocol introduces a new insurance marketplace with several innovative features:
-* Back any capital pool with a customizable insurance contract
+* Anyone can back any capital pool with a customizable insurance contract
 * Wrapped tokens with built in coverage (never "buy cover")
 * Staking pools with shield farming incentives
+* Claims processing via automated rules or a DAO
 * Final liquidation pool owned and governed by a DAO.
 
-Inspired by yearn, Aave, Compound, Balancer, Maker, rDAi, and others. The very best in DeFi.
+The protocol  was inspired and uses money legos from yearn, Aave, Compound, Balancer, Maker, rDAi, and others. The very best in DeFi.
 
 ## How it works
 ### pTokens, like cTokens but with cover
@@ -26,7 +27,7 @@ Users can deposit cTokens (or any pool share token, but we’re starting with Co
 ### Protekt Pools
 Protekt pools can be set up on top of ANY DeFi pool, whether it's a lending pool, market making pool, staking pool, etc. This underlying pool is called the "Target pool", and ANYONE can set up a Protekt pool on top of it. Protekt pools earn fees from the Target Pool, primarily by taking a cut of yield farming rewards. Stakers can add value to the Protekt pool to cover the liability of the Target pool from a Shortfall event and earn a portion of the fees in return.
 
-<Graphic>
+![Protekt Pool Image](/img/ProtektPool.png)
 
 ### The PKT Mothership Vault
 The PKT Mothership Vault is the backstop that covers all Protekt Pools, governs which Target Pools are added and how, and will eventually earn cashflow for their contribution. New Protekt Pools can only be added through the Mothership. She creates life and give security.
