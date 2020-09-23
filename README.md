@@ -1,15 +1,23 @@
 # Protekt Protocol
-Protekt Protocol puts crypto to work insuring users against hacks, bugs, and exploits of any DeFi protocol. Its goal is to support and catalyze the growth of the DeFi ecosystem by protecting users from getting rekt. Along with being an active DeFi protocol, an allocation of treasury reserves will be used to continually audit and secure other DeFi protocols, so the ecosystem can all grow safely together.
+Protekt Protocol puts crypto to work insuring users against hacks, bugs, and exploits of any DeFi protocol. Just as Uniswap allows any token to have a swap market, Protekt allows any pooled capital to be insured by stakers. Its goal is to support and catalyze the growth of the DeFi ecosystem by protecting users from getting rekt.
+
+Along with being an active DeFi protocol, an allocation of treasury reserves will be used to continually audit and secure other DeFi protocols, so the ecosystem can all grow safely together.
 
 <Thriving, safe DeFi Graphic>
 
-Building on the work of awesome projects like [Nexus Mutual](https://nexusmutual.io/), [DeFi Score](https://defiscore.io/), [Aave's Safety Modules](https://docs.aave.com/aavenomics/safety-module), and others, we believe that large vulnerabilities are the **biggest risk to a thriving DeFi community** over the next few years, especially as new money legos are created and remixed weekly. As more capital flows into the space, token holders need signaling and assurance of the projects they can trust and commit capital as well as recapitalization in the event of a [Shortfall Event](https://docs.aave.com/aavenomics/terminology#shortfall-event-se).
+Building on the work of awesome projects like [Nexus Mutual](https://nexusmutual.io/), [DeFi Score](https://defiscore.io/), [Aave's Safety Modules](https://docs.aave.com/aavenomics/safety-module), and others, we believe that large vulnerabilities are the **biggest risk to a thriving DeFi community** over the next few years, especially as new money legos are created and remixed weekly. As more capital flows into the space, token holders need signaling and assurance of the projects they can trust and commit capital as well as recapitalization if a [Shortfall Event](https://docs.aave.com/aavenomics/terminology#shortfall-event-se) occurs.
 
-To fulfill this need, Protekt Protocol introduces a new innovative system of wrapped tokens with built in coverage, staking pools with shield farming incentives, and finally a liquidation pool owned and governed by a DAO.
+To fulfill this need, Protekt Protocol introduces a new insurance marketplace with several innovative features:
+* Back any capital pool with a customizable insurance contract
+* Wrapped tokens with built in coverage (never "buy cover")
+* Staking pools with shield farming incentives
+* Final liquidation pool owned and governed by a DAO.
+
+
 
 ## How it works
 ### pTokens, like cTokens but with cover
-Inspired by Aave, Compound, yearn, rDai, Maker, and others, and powered by Balancer, users can deposit cTokens (or any pool share token, but we’re starting with Compound for now) and get pTokens in return. The pToken represents your cToken 1:1 plus 90% of the COMP farming rewards, while the other 10% goes to the Protekt Pool for that cToken lending pool. pToken can be minted at any time and redeemed for your cTokens + adjusted COMP rewards at any time.
+ users can deposit cTokens (or any pool share token, but we’re starting with Compound for now) and get pTokens in return. The pToken represents your cToken 1:1 plus 90% of the COMP farming rewards, while the other 10% goes to the Protekt Pool for that cToken lending pool. pToken can be minted at any time and redeemed for your cTokens + adjusted COMP rewards at any time.
 
 **In short, by holding a pToken, you pay 10% of your yield farming returns to be insured against a hacks, bugs, and exploits of the underlying pool.**
 
@@ -44,7 +52,7 @@ Governance will start and end with the Protekt community. They will be the ones 
 
 
 ## References
-Twitter for announcements: [@protektprotocol](https://twitter.com/home)
-Discord for discussions: 
-Snapshot for governance: 
-Github for code & docs: 
+* Twitter for announcements: [@protektprotocol](https://twitter.com/home)
+* Discord for discussions: [TBD](/)
+* Snapshot for governance: [TBD](/)
+* Github for code & docs: [Repo](https://github.com/corbinpage/protekt-protocol)
