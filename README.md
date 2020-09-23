@@ -18,34 +18,34 @@ The protocol  was inspired and uses money legos from yearn, Aave, Compound, Bala
 
 ## How it works
 ### pTokens, like cTokens but with cover
-Users can deposit cTokens (or any pool share token, but we’re starting with Compound for now) and get pTokens in return. The pToken represents your cToken 1:1 plus 90% of the COMP farming rewards, while the other 10% goes to the Protekt Pool for that cToken lending pool. pToken can be minted at any time and redeemed for your cTokens + adjusted COMP rewards at any time.
+Users can deposit Dai that gets forwarded into the Compound cDAI pool and get pTokens in return. The pToken represents your underlying cToken 1:1 plus 90% of the COMP farming rewards, while the other 10% goes to the Protekt pool stakers as rewards. This fee is the user's ongoing "premium" for purchasing cover. pTokens can be minted at any time and redeemed for your cTokens + adjusted COMP rewards at any time.
 
-**In short, by holding a pToken, you pay 10% of your yield farming returns to be insured against a hacks, bugs, and exploits of the underlying pool.**
+**In short, by holding a pToken, you pay 10% of your yield farming returns to be insured against a hacks, bugs, and exploits of the underlying capital pool.**
 
 ![pToken Image](/img/pTokenDiagram.png)
 
 ### Protekt Pools
-Protekt pools can be set up on top of ANY DeFi pool, whether it's a lending pool, market making pool, staking pool, etc. This underlying pool is called the "Target pool", and ANYONE can set up a Protekt pool on top of it. Protekt pools earn fees from the Target Pool, primarily by taking a cut of yield farming rewards. Stakers can add value to the Protekt pool to cover the liability of the Target pool from a Shortfall event and earn a portion of the fees in return.
+Protekt pools can be set up on top of ANY DeFi pool to insure it against risk, whether it's a lending pool, market making pool, staking pool, etc. Stakers can add capital to the Protekt pool to cover the liability of the underlying pool from a Shortfall event and earn a portion of the yield farming rewards in return. Stakers should only stake on capital pools they are confident are secure and can ask for audits, reviews, timelocks, etc before depositing value.
 
 ![Protekt Pool Image](/img/ProtektPool.png)
 
 ### The PKT Mothership Vault
-The PKT Mothership Vault is the backstop that covers all Protekt Pools, governs which Target Pools are added and how, and will eventually earn cashflow for their contribution. New Protekt Pools can only be added through the Mothership. She creates life and give security.
+The PKT Mothership Vault is the backstop that covers all Protekt pools, governs which underlying pools are added and when, and will eventually earn cashflow. New Protekt pools can only be added through the Mothership. She creates life and give security.
 
 ![Full Protocol Image](/img/ProtektProtocolDiagram.png)
 
 ## The PKT Token
-The PKT token is the token of the Protekt Protocol. It will be used to make governance decisions, staked for assuming protocol liability, receive cashflows from fees, provided as a protocol incentive, and used to fund grants and audit reports for DeFi protocols that are covered by Protekt.
+The PKT token is the governance and rewards token of the Protekt Protocol. It will be used to stake for assuming protocol liability, make governance decisions, receive rewards from protocol fees, provided as protocol incentives, and used to fund grants and audit reports for DeFi protocols that are covered by Protekt.
 
 ### Protocol Incentives (Yield Farming)
-Every Wednesday "Windfall Wednesday", new rounds of PKT will be claimable by those providing capital or work into the protocol. Tasks that earn weekly PKT include:
-* Shield Farming in a Protekt Pool
+Every Wednesday, new rounds of PKT will be claimable by those providing capital or work into the protocol. Tasks that earn weekly PKT include:
+* Shield Farming in a Protekt pool
 * Staking PKT, ETH, or DAI in the Mothership Vault
-* Rewarded for fulfilling open Grants
-* Rewarded for creating audit reports on other DeFi protocols
+* Rewards for fulfilling open grants
+* Rewards for creating audit reports on other DeFi protocols
 
 ### Governance
-Governance will start and end with the Protekt community. They will be the ones to propose coverage of new DeFi pools, adjust and critique settings, and keep DeFi safe at night.
+Governance will start and end with the Protekt community. The community will be not only be PKT holders but also the hackers, devs, auditors, analysts, and actuaries that contribute their blood, sweat, and tears to DeFi. They will be the ones to propose coverage of new DeFi pools, adjust and critique settings, and keep DeFi safe at night. The protocol will maintain some level of centralization at the beginning so it can iterate quickly but will pursue a pathway of [progressive decentralization](https://a16z.com/2020/01/09/progressive-decentralization-crypto-product-management/) over time.
 
 ## Shortfall Events & Liquidations
 
