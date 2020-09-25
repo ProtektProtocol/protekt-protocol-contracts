@@ -21,14 +21,14 @@ Every wednesday, we run a script to get the proportion of capital in each pool a
 ## Weekly Drops
 
 ### Alpha Week
-**1M PKT (0.1% of total)**
+**1M PKT (0.1% of 0.1% total distributed)**
 | Incentive Task | % earned | Payed out to | tx Hash |
 |----------------|----------|--------------|---------|
 |Translate the .md files in this repo to Chinese|20%|||
 |Set up a [Snapshot](https://snapshot.page/#/) for Protekt and add the link to this repo|20%||| 
 |Stake COMP in pcDAI Vault|20%|||
 |Stake ETH in Mothership Vault|20%|||
-||20%|||
+|TBD|20%|||
 
 
 

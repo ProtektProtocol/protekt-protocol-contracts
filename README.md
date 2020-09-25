@@ -29,8 +29,6 @@ Users can deposit Dai that gets forwarded into the Compound cDAI pool and get pT
 ### Protekt Pools
 Protekt pools are configurable insurance contracts that can be set up on top of ANY DeFi pool, whether it's a lending pool, market making pool, staking pool, etc. Users can point the contract at any Ethereum address, define the rules that trigger an incident, set the fees, and specify how the staking funds are managed and paid. Then anyone can mint pTokens by joining the pool and obtain coverage on their assets.
 
-![Form Image](/img/insuranceContractForm.gif)
-
 Stakers can add capital to the Protekt pool to cover the liability of the underlying pool from a Shortfall event and earn a portion of the yield farming rewards in return. Stakers should only stake on capital pools they are confident are secure and can ask for audits, reviews, timelocks, etc before depositing value.
 
 ![Protekt Pool Image](/img/ProtektPool.png)
@@ -45,8 +43,8 @@ The PKT token is the governance and rewards token of the Protekt Protocol. It wi
 
 ### Protocol Incentives (Yield Farming)
 Every Wednesday, new rounds of PKT will be claimable by those providing capital or work into the protocol. PKT can't be bought, only earned. Tasks that earn weekly PKT include:
-* Shield Farming in a Protekt pool
-* Staking PKT, ETH, or DAI in the Mothership Vault
+* Staking in a Protekt pool
+* Staking ETH or PKT in the Mothership Vault
 * Rewards for fulfilling open grants
 * Rewards for creating audit reports on other DeFi protocols
 
