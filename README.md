@@ -50,6 +50,8 @@ Every Wednesday, new rounds of PKT will be claimable by those providing capital 
 * Rewards for fulfilling open grants
 * Rewards for creating audit reports on other DeFi protocols
 
+Read more on the [Incentives page](/docs/incentives.md).
+
 ### Governance
 Governance will start and end with the Protekt community. The community will not only be PKT holders but also the hackers, devs, auditors, analysts, and actuaries that contribute their blood, sweat, and tears to DeFi. They will be the ones to propose coverage of new DeFi pools, adjust and critique settings, and keep DeFi safe at night. The protocol will maintain some level of centralization at the beginning so it can iterate quickly but will pursue a pathway of [progressive decentralization](https://a16z.com/2020/01/09/progressive-decentralization-crypto-product-management/) over time.
 
