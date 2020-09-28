@@ -14,6 +14,8 @@ The following risks are still present and NOT covered by this contract:
 ## For Insurees
 Users can deposit cDai and get pTokens in return, and those pcDAI tokens can be redeemed for underlying cDai 1:1.
 
+![pToken Image](/img/pTokenDiagram.png)
+
 ### Fees
 Each pcDAI is the same as cDAI except up to 20% of the COMP rewards go to Shield Miners instead of being collected by the pcDAI holder. The exact fee will be set by the market, depending on the ratio of the Coverage pool to the Staking pool, but is capped at 20%.
 
