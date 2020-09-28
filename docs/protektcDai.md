@@ -4,7 +4,7 @@ This protekt contract provides coverage on the DAI pooled in Compound's cDAI sma
 
 With a [DeFi Score](https://app.defiscore.io/assets/dai) of 8.1 on Sep 28, 2020, the Compound DAI lending market is one of the least risky applications in DeFi.
 
-See the [Risk Analysis section](## Risk Analysis) below for more details.
+See the [Risk Analysis section](#risk-analysis) below for more details.
 
 ### Not Covered
 The following risks are still present and NOT covered by this contract:
@@ -48,7 +48,7 @@ Additional rewards may be offered to shield miners but are not guaranteed. These
 * Native PKT token rewards
 * Native rewards from projects that want to encourage more stakers to enter the contract
 
-## Risk Analysis
+## [Risk Analysis](#risk-analysis)
 With a [DeFi Score](https://app.defiscore.io/assets/dai) of 8.1 on Sep 28, 2020, the Compound DAI lending market is one of the least risky applications in DeFi.
 
 Compound maintains a prominent [Security page](https://compound.finance/docs/security) on their site, which includes:
@@ -56,3 +56,4 @@ Compound maintains a prominent [Security page](https://compound.finance/docs/sec
 * The smart contracts have been formally verified by Certora using Certora ASA (Accurate Static Analysis)
 * A market stress test has been simulated by [Gauntlet](https://gauntlet.network/).
 * A Bug Bounty program to incentivize white hat hackers to identify vulnerabilities
+* Centralization risk tracked by [Codefi Inspect](https://inspect.codefi.network/).
