@@ -13,7 +13,7 @@ Some examples of tasks that earn weekly PKT include:
 
 ## Contributions
 ### Contributing Work
-Once a task is complete, open a PR on this repo for the work that was done. If the PR is merged in, comment with your Ethereum address, and you'll get issued the PKT.
+Once a task is complete, open a PR on this repo for the work that was done. If the PR is merged in, comment with your Ethereum address, and you'll get issued the PKT on the next Wednesday.
 
 ### Contributing Capital
 Every wednesday, we run a script to get the proportion of capital in each pool and the amount of blocks that it's been present. We will then issue PKT rewards to each depositing address, which will be claimable on our site.

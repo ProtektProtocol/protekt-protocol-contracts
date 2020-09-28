@@ -20,7 +20,7 @@ As an example, users can stake ETH and take on the liability of the cDAI pool. I
 Parameters
 * Reserve token
 * Withdraw delay (if any)
-* Strategy
+* Investment Strategy
 
 ### Protekt Contract
 Protekt contracts are configurable insurance contracts that define the terms of the market including:
@@ -37,33 +37,15 @@ Protekt contracts are configurable insurance contracts that define the terms of 
 
 ## Examples
 Let's look at examples to see what can be built:
-1. Simple pcDAI token - 
-2. DAO treasury coverage - 
-3. Simple Uniswap LP coverage - 
-4. Audit Firm coverage (centralized) - 
+1. [Protekt cDai](./protektcDai.md)] - Protect DAI deposits in Compound
+2. DAO treasury coverage - Protect the treasury of a project from being drained
+3. Simple Uniswap LP coverage - Protect LP shares from being drained or wild swings
+4. Audit Firm coverage (centralized) - Audit firm stakes that a project is secure technically and is paid ongoing fees
 
 
 | Name | For Insurees | For Stakers | Payout Events | Payouts |
 |---------|----------|---------|---------|---------|
-|Simple pcDAI token|Users can deposit cDAI and get 1:1 pcDAI back. The only difference is that pcDAI only earned 90% of COMP rewards.|Stakers deposit COMP and recieve an obligation to the equivalent portion of the pool. They earn rewards on their stake but get liquidated if a payout event occurs.|Anyone can call `submitClaim()` which does a smart contract query whether a payout scenario can occurred. If it has, then the pool enters the investigation period where coverage and staking withdrawals are frozen.|After the claim investigation period, anyone can call `claimPayout()` function, which checks if the payment scenario is still true, and liquidates the pool and potentially part of the Mothership Vault. pcDAI holders can redeem their tokens for the equivalent cDAI (which may be worthless or discounted) plus the proceeds from the liquidations, paid out in COMP.|
-|Simple Uniswap LP coverage|||||
+|[Protekt cDai](./protektcDai.md)]|Users can deposit cDAI and get 1:1 pcDAI back. The only difference is that pcDAI only earned 90% of COMP rewards.|Stakers deposit COMP and recieve an obligation to the equivalent portion of the pool. They earn rewards on their stake but get liquidated if a payout event occurs.|Anyone can call `submitClaim()` which does a smart contract query whether a payout scenario can occurred. If it has, then the pool enters the investigation period where coverage and staking withdrawals are frozen.|After the claim investigation period, anyone can call `claimPayout()` function, which checks if the payment scenario is still true, and liquidates the pool and potentially part of the Mothership Vault. pcDAI holders can redeem their tokens for the equivalent cDAI (which may be worthless or discounted) plus the proceeds from the liquidations, paid out in COMP.|
 |DAO treasury coverage|||||
+|Simple Uniswap LP coverage|||||
 |Audit Firm coverage (centralized)|||||
-
-
-|Translate the .md files in this repo to Chinese|20%|||
-|Set up a [Snapshot](https://snapshot.page/#/) for Protekt and add the link to this repo|20%||| 
-|Stake COMP in pcDAI Vault|20%|||
-|Stake ETH in Mothership Vault|20%|||
-||20%|||
-
-
-
-
-
-
-
-
-
-
-
