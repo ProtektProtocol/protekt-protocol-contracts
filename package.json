@@ -1,5 +1,5 @@
 {
-    "name": "yearn-protocol",
+    "name": "protekt-protocol",
     "devDependencies": {
         "ethlint": "^1.2.5",
         "prettier": "^2.1.1",
@@ -9,5 +9,8 @@
         "lint": "prettier --list-different **/*.sol **/*.json",
         "lint:check": "prettier --check **/*.sol **/*.json",
         "lint:fix": "prettier --write **/*.sol **/*.json"
+    },
+    "dependencies": {
+        "@openzeppelin/contracts": "^2.5.1"
     }
 }

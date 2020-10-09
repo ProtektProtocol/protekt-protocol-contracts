@@ -12,12 +12,12 @@ The following risks are still present and NOT covered by this contract:
 * Maker Protocol Risk - If the Maker protocol sustains a massive shortfall event, DAI could lose its peg or experience other adverse events. This event is not covered by this protekt contract.
 
 ## For Insurees
-Users can deposit cDai and get pTokens in return, and those pcDAI tokens can be redeemed for underlying cDai 1:1.
-
-![pToken Image](/img/pTokenDiagram.png)
+Users can deposit DAI or cDAI tokens and get pcDAI in return, which are redeemable for the underlying cDai 1:1.
 
 ### Fees
 Each pcDAI is the same as cDAI except up to 20% of the COMP rewards go to Shield Miners instead of being collected by the pcDAI holder. The exact fee will be set by the market, depending on the ratio of the Coverage pool to the Staking pool, but is capped at 20%.
+
+![pToken Image](/img/pTokenDiagram.png)
 
 ### Payout Events
 Payout events are calculated entirely programmatically based on the following query:
