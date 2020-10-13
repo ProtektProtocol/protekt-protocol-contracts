@@ -11,6 +11,7 @@
         "lint:fix": "prettier --write **/*.sol **/*.json"
     },
     "dependencies": {
-        "@openzeppelin/contracts": "^2.5.1"
+        "@openzeppelin/contracts": "^2.5.1",
+        "bignumber.js": "^9.0.1"
     }
 }
