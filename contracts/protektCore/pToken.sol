@@ -15,8 +15,8 @@ contract pToken is ERC20, ERC20Detailed {
     using SafeMath for uint256;
 
     IERC20 public depositToken;
-    IERC20 public shieldToken;
 
+    address public feeModel;
     address public governance;
 
     address public constant compComptroller = address(0x3d9819210A31b4961b30EF54bE2aeD79B9c9Cd3B);
@@ -25,7 +25,7 @@ contract pToken is ERC20, ERC20Detailed {
 
     event HarvestRewards(uint256 amount);
 
-    constructor(address _depositToken)
+    constructor(address _depositToken, address _feeModel)
         public
         ERC20Detailed(
             string(abi.encodePacked("protekt ", ERC20Detailed(_depositToken).name())),
@@ -34,6 +34,7 @@ contract pToken is ERC20, ERC20Detailed {
         )
     {
         depositToken = IERC20(_depositToken);
+        feeModel = _feeModel;
         governance = msg.sender;
     }
 
@@ -44,6 +45,11 @@ contract pToken is ERC20, ERC20Detailed {
     function setGovernance(address _governance) public {
         require(msg.sender == governance, "!governance");
         governance = _governance;
+    }
+
+    function setFeeModel(address _feeModel) public {
+        require(msg.sender == governance, "!governance");
+        feeModel = _feeModel;
     }
 
     function depositAll() external {
@@ -78,7 +84,7 @@ contract pToken is ERC20, ERC20Detailed {
 
         // Transfer COMP to governance
         uint256 amount = IERC20(cdai).balanceOf(address(this));
-        IERC20(cdai).safeTransfer(governance, amount);
+        IERC20(cdai).safeTransfer(feeModel, amount);
 
         emit HarvestRewards(amount); 
     }

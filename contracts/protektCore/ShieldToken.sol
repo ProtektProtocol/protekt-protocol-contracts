@@ -7,8 +7,9 @@ import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20Detailed.sol";
 import "@openzeppelin/contracts/ownership/Ownable.sol";
-
 import "../../interfaces/yearn/IController.sol";
+import "../../interfaces/protekt/IClaimsManager.sol";
+import "../../interfaces/protekt/IProtektToken.sol";
 
 contract ShieldToken is ERC20, ERC20Detailed {
     using SafeERC20 for IERC20;
@@ -16,15 +17,16 @@ contract ShieldToken is ERC20, ERC20Detailed {
     using SafeMath for uint256;
 
     IERC20 public depositToken;
-    IERC20 public protektToken;
+    IProtektToken public protektToken;
 
     uint256 public min = 9500;
     uint256 public constant max = 10000;
 
     address public governance;
     address public controller;
+    IClaimsManager public claimsManager;
 
-    constructor(address _protektToken, address _depositToken, address _controller)
+    constructor(address _protektToken, address _depositToken, address _controller, address _claimsManager)
         public
         ERC20Detailed(
             string(abi.encodePacked("shield ", ERC20Detailed(_protektToken).name())),
@@ -32,8 +34,9 @@ contract ShieldToken is ERC20, ERC20Detailed {
             ERC20Detailed(_protektToken).decimals()
         )
     {
-        protektToken = IERC20(_protektToken);
+        protektToken = IProtektToken(_protektToken);
         depositToken = IERC20(_depositToken);
+        claimsManager = IClaimsManager(_claimsManager);
         governance = msg.sender;
         controller = _controller;
     }
@@ -49,7 +52,7 @@ contract ShieldToken is ERC20, ERC20Detailed {
 
     function setProtektToken(address _protektToken) public {
         require(msg.sender == governance, "!governance");
-        protektToken = IERC20(_protektToken);
+        protektToken = IProtektToken(_protektToken);
     }
 
     function setGovernance(address _governance) public {
@@ -107,6 +110,16 @@ contract ShieldToken is ERC20, ERC20Detailed {
 
     function getPricePerFullShare() public view returns (uint256) {
         return balance().mul(1e18).div(totalSupply());
+    }
+
+    function payout() external returns (uint256) {
+        require(msg.sender == address(claimsManager), "!claimsManager");
+
+        uint256 amount = balanceOf(address(this));
+
+        depositToken.safeTransfer(protektToken.feeModel(), amount);
+
+        return amount;
     }
 
     // Custom logic in here for how much the vault allows to be borrowed
