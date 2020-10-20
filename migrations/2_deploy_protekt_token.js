@@ -8,7 +8,7 @@ const ShieldToken = artifacts.require("ShieldToken");
 module.exports = function (deployer, network, accounts) {
   let underlyingToken, reserveToken
   let protektToken
-  let shieldController, shieldStrategy, shieldToken, ClaimsManager
+  let shieldController, shieldStrategy, shieldToken, claimsManager
 
   // Launch TestTokens
   deployer.deploy(Token).then(function(instance) {
@@ -37,17 +37,20 @@ module.exports = function (deployer, network, accounts) {
   // Launch ClaimsManager
     return deployer.deploy(ClaimsManager);
   }).then(function(instance) {
-    ClaimsManager = instance
+    claimsManager = instance
 
     return deployer.deploy(
       ShieldToken,
       protektToken.address,
       reserveToken.address,
       shieldController.address,
-      ClaimsManager.address
+      claimsManager.address
     );
   }).then(function(instance) {
     shieldToken = instance
+    claimsManager.setShieldToken(shieldToken.address)
+
+    
     // Output
     console.log('Underlying Token: ', underlyingToken.address)
     console.log('Reserve Token: ', reserveToken.address)
@@ -57,7 +60,7 @@ module.exports = function (deployer, network, accounts) {
     console.log('Shield Token: ', shieldToken.address)
     console.log('Shield Controller: ', shieldController.address)
     console.log('Shield Strategy: ', shieldStrategy.address)
-    console.log('Claims Manager: ', ClaimsManager.address)
+    console.log('Claims Manager: ', claimsManager.address)
   })
 
 };

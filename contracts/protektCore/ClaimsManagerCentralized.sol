@@ -3,7 +3,7 @@ pragma solidity ^0.5.17;
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "../../interfaces/protekt/IShieldToken.sol";
 
-contract ClaimsManager {
+contract ClaimsManagerCentralized {
 	IShieldToken public shieldToken;
 	address public governance;
 	enum ClaimsStatus {
@@ -20,12 +20,16 @@ contract ClaimsManager {
 	event ClaimInvestigationStarted(uint256 InvestigationPeriodEnd);
 	event Payout();
 
-    constructor(address _shieldToken) public {
-    	shieldToken = IShieldToken(_shieldToken);
+    constructor() public {
     	investigationPeriod = 43200;
     	currentInvestigationPeriodEnd = 0;
     	activePayoutEvent = false;
     	governance = msg.sender;
+    }
+
+    function setShieldToken(address _shieldToken) public {
+        require(msg.sender == governance, "!governance");
+        shieldToken = IShieldToken(_shieldToken);
     }
 
     function setGovernance(address _governance) public {
