@@ -54,7 +54,7 @@ module.exports = function (deployer, network, accounts) {
 
 
 
-  // 5) Launch ClaimsManager ===========================================
+  // 5) Launch ShieldToken =============================================
     return deployer.deploy(
       ShieldToken,
       protektToken.address,
@@ -70,16 +70,23 @@ module.exports = function (deployer, network, accounts) {
 
     
     // Output ==============================================================
+    console.log('# TestTokens')
     console.log('Underlying Token: ', underlyingToken.address)
     console.log('Reserve Token: ', reserveToken.address)
     console.log('-----')
+    console.log('-----')
+    console.log('# pToken')
     console.log('Protekt Token: ', protektToken.address)
     console.log('Fee Model Contract: ', protektToken.address)
     console.log('-----')
+    console.log('-----')
+    console.log('# ShieldToken')
     console.log('Shield Token: ', shieldToken.address)
     console.log('Controller: ', shieldController.address)
     console.log('Strategy: ', shieldStrategy.address)
     console.log('Claims Manager: ', claimsManager.address)
+    console.log('-----')
+    console.log('-----')
   })
 
 };
