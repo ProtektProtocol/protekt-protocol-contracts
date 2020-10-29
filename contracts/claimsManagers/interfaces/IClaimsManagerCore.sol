@@ -1,6 +1,6 @@
 pragma solidity ^0.5.17;
 
-interface IClaimsManager {
+interface IClaimsManagerCore {
 	enum ClaimsStatus {
 		Active,
 		Investigating,
@@ -9,7 +9,6 @@ interface IClaimsManager {
 
 	// Setters
 	function setShieldToken(address _shieldToken) external;
-	function setGovernance(address _governance) external;
 	function setInvestigationPeriodBlocks(uint256 _period) external;
 
 	// Claims Management
@@ -18,10 +17,8 @@ interface IClaimsManager {
 	function payoutClaim() external;
 
 	// Variables
-	function governance() external returns (address);
 	function status() external returns (ClaimsStatus);
 	function investigationPeriod() external returns (uint256);
 	function currentInvestigationPeriodEnd() external returns (uint256);
 	function activePayoutEvent() external returns (bool);
 }
-

@@ -1,15 +1,15 @@
 pragma solidity ^0.5.17;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "../../interfaces/protekt/IShieldToken.sol";
+import "../protektCore/interfaces/IShieldToken.sol";
 
-contract ClaimsManagerCentralized {
+contract ClaimsManagerSingleAccount {
 	IShieldToken public shieldToken;
 	address public governance;
 	enum ClaimsStatus {
 		Active,
 		Investigating,
-		ClaimAccepted
+		Accepted
 	}
 	ClaimsStatus public status;
 	uint256 public investigationPeriod; // One week (14 sec block times)
@@ -46,7 +46,13 @@ contract ClaimsManagerCentralized {
     	return activePayoutEvent;
     }
 
-	function submitClaim() external {
+    // Governance account can set whether a payoutEvent has occurred or not
+    function setActivePayoutEvent(bool _activePayoutEvent) external {
+    	require(msg.sender == governance, "!governance");
+    	activePayoutEvent = _activePayoutEvent;
+    }
+
+	function submitClaim() external returns (bool) {
 		require(status == ClaimsStatus.Active, "!Active");
 
 		if(checkPayoutEvent()) {
@@ -54,6 +60,8 @@ contract ClaimsManagerCentralized {
 			status = ClaimsStatus.Investigating;
 			emit ClaimInvestigationStarted(currentInvestigationPeriodEnd);
 		}
+
+		return checkPayoutEvent();
 	}
 
 	function payoutClaim() external {
@@ -62,7 +70,7 @@ contract ClaimsManagerCentralized {
 		require(checkPayoutEvent(), "!Payout Event");
 
 		shieldToken.payout();
-		status = ClaimsStatus.ClaimAccepted;
+		status = ClaimsStatus.Accepted;
 		emit Payout();
 	}
 }

@@ -8,8 +8,8 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20Detailed.sol";
 import "@openzeppelin/contracts/ownership/Ownable.sol";
 import "../../interfaces/yearn/IController.sol";
-import "../../interfaces/protekt/IClaimsManager.sol";
-import "../../interfaces/protekt/IProtektToken.sol";
+import "../claimsManagers/interfaces/IClaimsManagerCore.sol";
+import "../protektCore/interfaces/IProtektToken.sol";
 
 contract ShieldToken is ERC20, ERC20Detailed {
     using SafeERC20 for IERC20;
@@ -24,7 +24,7 @@ contract ShieldToken is ERC20, ERC20Detailed {
 
     address public governance;
     address public controller;
-    IClaimsManager public claimsManager;
+    IClaimsManagerCore public claimsManager;
 
     constructor(address _protektToken, address _depositToken, address _controller, address _claimsManager)
         public
@@ -36,7 +36,7 @@ contract ShieldToken is ERC20, ERC20Detailed {
     {
         protektToken = IProtektToken(_protektToken);
         depositToken = IERC20(_depositToken);
-        claimsManager = IClaimsManager(_claimsManager);
+        claimsManager = IClaimsManagerCore(_claimsManager);
         governance = msg.sender;
         controller = _controller;
     }
@@ -116,7 +116,6 @@ contract ShieldToken is ERC20, ERC20Detailed {
         require(msg.sender == address(claimsManager), "!claimsManager");
 
         uint256 amount = balanceOf(address(this));
-
         depositToken.safeTransfer(protektToken.feeModel(), amount);
 
         return amount;
