@@ -22,7 +22,10 @@ module.exports = function (deployer, network, accounts) {
     reserveToken = instance
   // ===================================================================
 
-
+  console.log('accounts')
+  console.log(accounts)
+  console.log('---')
+  console.log(accounts[0])
 
   // 2) Launch pToken =====================================================
   // Fee model contract = governance address
@@ -33,7 +36,7 @@ module.exports = function (deployer, network, accounts) {
 
 
 
-  // 3) Launch Investment Strategy =====================================
+  // 3) Launch Investment Strategy (StrategyHodl) ======================
     return deployer.deploy(Controller, reserveToken.address);
   }).then(function(instance) {
     shieldController = instance
@@ -46,7 +49,7 @@ module.exports = function (deployer, network, accounts) {
 
 
 
-  // 4) Launch ClaimsManager ===========================================
+  // 4) Launch ClaimsManager (ClaimsManagerSingleAccount) ==============
     return deployer.deploy(ClaimsManager);
   }).then(function(instance) {
     claimsManager = instance

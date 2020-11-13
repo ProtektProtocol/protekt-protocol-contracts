@@ -42,7 +42,7 @@ contract ShieldToken is ERC20, ERC20Detailed {
     }
 
     function balance() public view returns (uint256) {
-        return depositToken.balanceOf(address(this)).add(IController(controller).balanceOf(address(depositToken)));
+        return depositToken.balanceOf(address(this)).add(depositToken.balanceOf(address(controller)));
     }
 
     function setMin(uint256 _min) external {
