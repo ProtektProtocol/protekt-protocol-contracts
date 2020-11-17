@@ -192,11 +192,11 @@ contract("ClaimsManagerSingleAccount", accounts => {
       );
     });
 
-    // it("should not be able to payoutClaim before investigation period end", async () => {
-    //   await expectRevert(targetClaimsManager.payoutClaim(
-    //     { from: accountAlice }), '!Done Investigating',
-    //   );
-    // });
+    it("should not be able to payoutClaim before investigation period end", async () => {
+      await expectRevert(targetClaimsManager.payoutClaim(
+        { from: accountAlice }), '!Done Investigating',
+      );
+    });
 
     it("should be able to payoutClaim after investigation period end", async () => {
       await increaseTime(7);
