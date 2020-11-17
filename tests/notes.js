@@ -32,7 +32,7 @@
 // 	Non-governance address can not set feeModel
 
 
-
+// Reference tests: https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/test/token/ERC20/ERC20.test.js
 
 //  Contract: MerkleRedeem - High Volume
 //     ✓ stores 200 allocations (80318 gas)
