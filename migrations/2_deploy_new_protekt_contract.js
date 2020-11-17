@@ -11,8 +11,6 @@ module.exports = function (deployer, network, accounts) {
   let protektToken
   let shieldController, shieldStrategy, shieldToken, claimsManager
 
-
-
   // 1) Launch TestTokens =================================================
   deployer.deploy(UnderlyingToken).then(function(instance) {
     underlyingToken = instance 
@@ -22,10 +20,10 @@ module.exports = function (deployer, network, accounts) {
     reserveToken = instance
   // ===================================================================
 
-  console.log('accounts')
-  console.log(accounts)
-  console.log('---')
-  console.log(accounts[0])
+  // console.log('accounts')
+  // console.log(accounts)
+  // console.log('---')
+  // console.log(accounts[0])
 
   // 2) Launch pToken =====================================================
   // Fee model contract = governance address

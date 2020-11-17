@@ -14,73 +14,153 @@ const truffleAssert = require("truffle-assertions");
 contract("pToken", accounts => {
   const governance = accounts[0];
   const notGovernance = accounts[1];
-  let targetpToken
+  const accountAlice = accounts[2];
+  const accountBob = accounts[3];
+  let targetpToken, underlyingToken, initialSupply, amount
   
   beforeEach(async function () {
     targetpToken = await pToken.deployed();
   });
 
   describe('Governance features', function () {
+    beforeEach(async function () {
+      targetpToken = await pToken.new(UnderlyingToken.address, governance)
+    });
 
     it("should not allow a non-governance address to set the governance address", async () => {
       await expectRevert(targetpToken.setGovernance(
-        notGovernance, { from: notGovernance }), '!governance',
+        accountAlice, { from: notGovernance }), '!governance',
       );
     });
 
     it("should allow the Governance address to set the governance address", async () => {
       await targetpToken.setGovernance(
-        notGovernance, { from: governance }
+        accountAlice, { from: governance }
       )
-      expect(await targetpToken.governance()).to.equal(notGovernance);
+      expect(await targetpToken.governance()).to.equal(accountAlice);
     });
 
     it("should not allow a non-governance address to set the feeModal address", async () => {
-      // await expectRevert(targetpToken.setGovernance(
-      //   notGovernance, { from: notGovernance }), '!governance',
-      // );
-      expect(1).to.equal(2);
+      await expectRevert(targetpToken.setFeeModel(
+        accountAlice, { from: notGovernance }), '!governance',
+      );
     });
 
     it("should allow the Governance address to set the feeModal address", async () => {
-      // await targetpToken.setGovernance(
-      //   notGovernance, { from: governance }
-      // )
-      // expect(await targetpToken.governance()).to.equal(notGovernance);
-      expect(1).to.equal(2);
+      await targetpToken.setFeeModel(
+        accountAlice, { from: governance }
+      )
+      expect(await targetpToken.feeModel()).to.equal(accountAlice);
     });
+
+    it("should not allow a non-governance address to harvest rewards", async () => {
+      await expectRevert(targetpToken.harvestRewards(
+        { from: notGovernance }), '!governance',
+      );
+    });
+
+    // it("should allow the Governance address to harvest rewards", async () => {
+    //   await targetpToken.harvestRewards(
+    //     { from: governance }
+    //   )
+
+    //   expectEvent.inLogs(logs, 'HarvestRewards', {
+    //     amount: new BN(0)
+    //   });
+    // });
   })
 
   describe('when there are no deposits', function () {
     it("should have all balances of 0", async () => {
-      expect(1).to.equal(2);
+      expect(await targetpToken.balanceOf(governance)).to.be.bignumber.equal('0');
+      expect(await targetpToken.balanceOf(notGovernance)).to.be.bignumber.equal('0');
+      expect(await targetpToken.balanceOf(accountAlice)).to.be.bignumber.equal('0');
+      expect(await targetpToken.balanceOf(accountBob)).to.be.bignumber.equal('0');
     });
 
     it("should not be able to withdraw", async () => {
-      expect(1).to.equal(2);
+      await expectRevert.unspecified(
+        targetpToken.withdraw(
+          10, { from: accountAlice }
+        )
+      );
     });
 
-    it("should not be able to withdrawAll", async () => {
-      expect(1).to.equal(2);
+    it("should not be able to get PricePerFullShare", async () => {
+      await expectRevert.unspecified(
+        targetpToken.getPricePerFullShare(
+          { from: accountAlice }
+        )
+      );
     });
   })
 
   describe('when there are deposits', function () {
+    beforeEach(async function () {
+      underlyingToken = await UnderlyingToken.new( {from: governance} )
+      initialSupply = new BN('100000000000000000000000')
 
-  //   When there are some deposits
-  // -balance
-  // -depositAll
-  // -deposit
-  //   -deposit more than have
-  // -withdrawAll
-  // -withdraw
-  //   -More than user has
-  // -getPricePerFullShare()
-  //   -when 0
-  //   -when some
-  // -harvestRewards - Compound
-  //   -Test governance revert
+      targetpToken = await pToken.new(underlyingToken.address, governance)
+      amount = new BN('20000000000000000000')
+      await underlyingToken.approve(
+        targetpToken.address,
+        amount,
+        { from: governance }
+      );
+      await targetpToken.deposit(amount, { from: governance})
+    });
 
+    it("should query correct balances", async () => {
+      expect(await targetpToken.balanceOf(governance)).to.be.bignumber.equal(amount);
+      expect(await targetpToken.balanceOf(notGovernance)).to.be.bignumber.equal('0');
+      expect(await targetpToken.balanceOf(accountAlice)).to.be.bignumber.equal('0');
+      expect(await targetpToken.balanceOf(accountBob)).to.be.bignumber.equal('0');
+    });
+
+    it("should be able to withdraw <= balance", async () => {
+      amount = new BN('10000000000000000000')
+      await targetpToken.withdraw(amount, { from: governance})
+
+      expect(await targetpToken.balanceOf(governance)).to.be.bignumber.equal(amount);
+    });
+
+    it("should not be able to withdraw > balance", async () => {
+      amount = new BN('30000000000000000000')
+      await expectRevert.unspecified(
+        targetpToken.withdraw(
+          amount, { from: governance }
+        )
+      );
+    });
+
+    it("should calculate PricePerFullShare correctly", async () => {
+      let originalAmount = new BN('1000000000000000000')
+      expect(await targetpToken.getPricePerFullShare()).to.be.bignumber.equal(originalAmount);
+
+      amount = new BN('20000000000000000000')
+      await underlyingToken.transfer(targetpToken.address, amount, { from: governance})
+
+      let finalAmount = new BN('2000000000000000000')
+      expect(await targetpToken.getPricePerFullShare()).to.be.bignumber.equal(finalAmount);
+    });
+  })
+
+  describe('when rewards are harvested', function () {
+    // it("should query correct balances", async () => {
+    //   expect(1).to.equal(2);
+    // });
+
+    // it("should be able to withdraw <= balance", async () => {
+    //   expect(1).to.equal(2);
+    // });
+
+    // it("should not be able to withdraw > balance", async () => {
+    //   expect(1).to.equal(2);
+    // });
+
+    // it("should calculate PricePerFullShare correctly", async () => {
+    //   expect(1).to.equal(2);
+    // });
   })
 
 })
