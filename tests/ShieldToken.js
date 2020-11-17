@@ -31,6 +31,10 @@ contract("shieldToken", accounts => {
       targetshieldToken = await shieldToken.new(pToken.address, ReserveToken.address, controller.address ,governance)
     });
 
+    /*
+        Setting governance address
+    */
+
     it("should not allow a non-governance address to set the governance address", async () => {
       await expectRevert(targetshieldToken.setGovernance(
         accountAlice, { from: notGovernance }), '!governance',
@@ -43,6 +47,10 @@ contract("shieldToken", accounts => {
       )
       expect(await targetshieldToken.governance()).to.equal(accountAlice);
     });
+
+    /*
+        Setting min value
+    */
 
     it("should not allow a non-governance address to set the min value", async () => {
       await expectRevert(targetshieldToken.setMin(
@@ -58,9 +66,43 @@ contract("shieldToken", accounts => {
       expect(await targetshieldToken.min()).to.be.bignumber.equal("10000000");
     });
 
-    // setting controller
+    /* 
+        Setting controller
+    */
 
-    // setting protekt token
+    it("should not allow a non-governance address to set the controller", async () => {
+      await expectRevert(targetshieldToken.setController(
+        accountAlice, { from: notGovernance }), '!governance',
+      );
+    });
+
+    it("should allow the Governance address to set the controller", async () => {
+      await targetshieldToken.setController(
+        accountAlice, { from: governance }
+      )
+      expect(await targetshieldToken.controller()).equal(accountAlice);
+    });
+
+
+
+    /*
+        Setting protekt token
+    */
+
+    it("should not allow a non-governance address to set the protekt token", async () => {
+      await expectRevert(targetshieldToken.setProtektToken(
+        accountAlice, { from: notGovernance }), '!governance',
+      );
+    });
+
+    it("should allow the Governance address to set the protekt token", async () => {
+      await targetshieldToken.setProtektToken(
+        accountAlice, { from: governance }
+      )
+      expect(await targetshieldToken.protektToken()).equal(accountAlice); 
+    });
+
+    
 
 
 
