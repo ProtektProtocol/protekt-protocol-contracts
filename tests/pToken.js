@@ -4,10 +4,6 @@ const pToken = artifacts.require("pToken");
 const { BN, expectEvent, expectRevert } = require('@openzeppelin/test-helpers');
 const should = require("chai").should();
 const { expect } = require('chai');
-const { promisify } = require("util");
-const { utils } = web3;
-const { increaseTime } = require("./helpers");
-const truffleAssert = require("truffle-assertions");
 
 contract("pToken", accounts => {
   const governance = accounts[0];
