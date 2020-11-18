@@ -64,7 +64,7 @@ contract ClaimsManagerSingleAccount {
 
 	function payoutClaim() external {
 		require(status == ClaimsStatus.Investigating, "!Investigating");
-		require(currentInvestigationPeriodEnd >= block.number, "!Done Investigating");
+		require(currentInvestigationPeriodEnd <= block.number, "!Done Investigating");
 		require(checkPayoutEvent(), "!Payout Event");
 
 		shieldToken.payout();
@@ -73,8 +73,8 @@ contract ClaimsManagerSingleAccount {
 	}
 
 	function resetClaim() external {
-		require(status == ClaimsStatus.Paid, "!Paid");
-		require(currentInvestigationPeriodEnd >= block.number, "!Done Investigating");
+		require(currentInvestigationPeriodEnd <= block.number, "!Done Investigating");
+		require(status == ClaimsStatus.Paid || (status == ClaimsStatus.Investigating && !checkPayoutEvent()), "!Paid or !Investigating+Payout");
 
 		if(status == ClaimsStatus.Paid || (status == ClaimsStatus.Investigating && !checkPayoutEvent())) {
 			currentInvestigationPeriodEnd = 0;

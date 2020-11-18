@@ -117,7 +117,7 @@ contract("ClaimsManagerSingleAccount", accounts => {
     it("should not start a claim if no activePayoutEvent", async () => {
       let originalActivePayoutEvent = await targetClaimsManager.activePayoutEvent()
 
-      let submitClaimResponse = await targetClaimsManager.submitClaim(
+      await targetClaimsManager.submitClaim(
         { from: accountAlice }
       )
 
@@ -139,6 +139,10 @@ contract("ClaimsManagerSingleAccount", accounts => {
 
     describe('when claim submitted successfully', function () {
       it("should emit a ClaimInvestigationStarted event", async () => {
+        let newInvestigationPeriod = new BN(0)
+        await targetClaimsManager.setInvestigationPeriod(
+          newInvestigationPeriod, { from: governance }
+        )
         let investigationPeriod = await targetClaimsManager.investigationPeriod()
         
         await targetClaimsManager.setActivePayoutEvent(
@@ -192,22 +196,31 @@ contract("ClaimsManagerSingleAccount", accounts => {
       );
     });
 
-    it("should not be able to payoutClaim before investigation period end", async () => {
-      await expectRevert(targetClaimsManager.payoutClaim(
-        { from: accountAlice }), '!Done Investigating',
-      );
-    });
+    describe("when the investigation period has ended", function () {
+      it("should not be able to payoutClaim if no payout event", async () => {
+        await targetClaimsManager.setActivePayoutEvent(
+          false, { from: governance }
+        )
 
-    it("should be able to payoutClaim after investigation period end", async () => {
-      await increaseTime(7);
+        await expectRevert(targetClaimsManager.payoutClaim(
+          { from: accountAlice }), '!Payout Event',
+        );
 
-      const { logs } = await targetClaimsManager.payoutClaim(
-        { from: accountAlice }
-      )
+        // Reset
+        await targetClaimsManager.setActivePayoutEvent(
+          true, { from: governance }
+        )
+      });
 
-      expectEvent.inLogs(logs, 'Payout');
-      expect(await targetClaimsManager.status()).to.be.bignumber.equal(new BN(2)); // Status = Paid
-    });
+      it("should be able to payoutClaim", async () => {
+        const { logs } = await targetClaimsManager.payoutClaim(
+          { from: accountAlice }
+        )
+
+        expectEvent.inLogs(logs, 'Payout');
+        expect(await targetClaimsManager.status()).to.be.bignumber.equal(new BN(2)); // Status = Paid
+      });
+    })
   })
 
   describe('when claim status is Paid', function () {
@@ -241,4 +254,50 @@ contract("ClaimsManagerSingleAccount", accounts => {
     });
   })
 
+  describe('when claim status is Investigating, after the investigation period end, payout event is false', function () {
+    it("should not be able to payoutClaim", async () => {
+      // Reset state
+      await targetClaimsManager.setActivePayoutEvent(
+        true, { from: governance }
+      )
+      
+      await targetClaimsManager.submitClaim(
+        { from: accountAlice }
+      )
+      await targetClaimsManager.setActivePayoutEvent(
+        false, { from: governance }
+      )
+
+      await expectRevert(targetClaimsManager.payoutClaim(
+        { from: accountAlice }), '!Payout Event',
+      );
+    });
+
+    it("should be able to resetClaim", async () => {
+      const { logs } = await targetClaimsManager.resetClaim(
+        { from: accountAlice }
+      )
+
+      expect(await targetClaimsManager.status()).to.be.bignumber.equal(new BN(0)); // Status = Ready
+    });
+  })
+
+  describe('when claim status is Investigating and before the investigation period end', function () {
+    it("should not be able to payoutClaim", async () => {
+      // Reset state
+      await targetClaimsManager.setActivePayoutEvent(
+        true, { from: governance }
+      )
+      await targetClaimsManager.setInvestigationPeriod(
+        new BN(43200), { from: governance }
+      )
+      await targetClaimsManager.submitClaim(
+        { from: accountAlice }
+      )
+    
+      await expectRevert(targetClaimsManager.payoutClaim(
+        { from: accountAlice }), '!Done Investigating',
+      );
+    });
+  })
 });
