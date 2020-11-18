@@ -159,12 +159,12 @@ contract("shieldToken", accounts => {
 
   describe('when there are deposits', function () {
     beforeEach(async function () {
-      ReserveToken = await ReserveToken.new( {from: governance} )
+      reserveToken = await ReserveToken.new( {from: governance} )
       initialSupply = new BN('100000000000000000000000')
 
-      targetshieldToken = await shieldToken.new(ReserveToken.address, governance)
+      targetshieldToken = await shieldToken.new(pToken.address, reserveToken.address, controller.address ,governance)
       amount = new BN('20000000000000000000')
-      await ReserveToken.approve(
+      await reserveToken.approve(
         targetshieldToken.address,
         amount,
         { from: governance }
@@ -200,7 +200,7 @@ contract("shieldToken", accounts => {
       expect(await targetshieldToken.getPricePerFullShare()).to.be.bignumber.equal(originalAmount);
 
       amount = new BN('20000000000000000000')
-      await ReserveToken.transfer(targetshieldToken.address, amount, { from: governance})
+      await reserveToken.transfer(targetshieldToken.address, amount, { from: governance})
 
       let finalAmount = new BN('2000000000000000000')
       expect(await targetshieldToken.getPricePerFullShare()).to.be.bignumber.equal(finalAmount);
