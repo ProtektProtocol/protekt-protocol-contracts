@@ -7,9 +7,9 @@ contract ClaimsManagerSingleAccount {
 	IShieldToken public shieldToken;
 	address public governance;
 	enum ClaimsStatus {
-		Active,
+		Ready,
 		Investigating,
-		Accepted
+		Paid
 	}
 	ClaimsStatus public status;
 	uint256 public investigationPeriod; // One week (14 sec block times)
@@ -27,17 +27,17 @@ contract ClaimsManagerSingleAccount {
     	governance = msg.sender;
     }
 
-    function setShieldToken(address _shieldToken) public {
+    function setShieldToken(address _shieldToken) external {
         require(msg.sender == governance, "!governance");
         shieldToken = IShieldToken(_shieldToken);
     }
 
-    function setGovernance(address _governance) public {
+    function setGovernance(address _governance) external {
         require(msg.sender == governance, "!governance");
         governance = _governance;
     }
 
-    function setInvestigationPeriodBlocks(uint256 _period) public {
+    function setInvestigationPeriod(uint256 _period) external {
         require(msg.sender == governance, "!governance");
         investigationPeriod = _period;
     }
@@ -53,25 +53,33 @@ contract ClaimsManagerSingleAccount {
     }
 
 	function submitClaim() external returns (bool) {
-		require(status == ClaimsStatus.Active, "!Active");
+		require(status == ClaimsStatus.Ready, "!Ready");
 
 		if(checkPayoutEvent()) {
 			currentInvestigationPeriodEnd = block.number + investigationPeriod;
 			status = ClaimsStatus.Investigating;
 			emit ClaimInvestigationStarted(currentInvestigationPeriodEnd);
 		}
-
-		return checkPayoutEvent();
 	}
 
 	function payoutClaim() external {
 		require(status == ClaimsStatus.Investigating, "!Investigating");
-		require(currentInvestigationPeriodEnd >= block.number, "!Done Investigating");
+		require(currentInvestigationPeriodEnd <= block.number, "!Done Investigating");
 		require(checkPayoutEvent(), "!Payout Event");
 
 		shieldToken.payout();
-		status = ClaimsStatus.Accepted;
+		status = ClaimsStatus.Paid;
 		emit Payout();
+	}
+
+	function resetClaim() external {
+		require(currentInvestigationPeriodEnd <= block.number, "!Done Investigating");
+		require(status == ClaimsStatus.Paid || (status == ClaimsStatus.Investigating && !checkPayoutEvent()), "!Paid or !Investigating+Payout");
+
+		if(status == ClaimsStatus.Paid || (status == ClaimsStatus.Investigating && !checkPayoutEvent())) {
+			currentInvestigationPeriodEnd = 0;
+			status = ClaimsStatus.Ready;
+		}
 	}
 }
 
