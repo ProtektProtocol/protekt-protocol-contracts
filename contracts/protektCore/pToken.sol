@@ -97,6 +97,7 @@ contract pToken is ERC20, ERC20Detailed {
         depositToken.safeTransfer(msg.sender, r);
     }
 
+    // Returns depositTokens per share price
     function getPricePerFullShare() public view returns (uint256) {
         return balance().mul(1e18).div(totalSupply());
     }
