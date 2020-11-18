@@ -106,7 +106,7 @@ contract("shieldToken", accounts => {
 
 
 
-    // these don't exist in shield
+    // these don't exist in shield or are commented out
     
     // it("should allow the Governance address to set the feeModal address", async () => {
     //   await targetshieldToken.setFeeModel(
@@ -207,6 +207,14 @@ contract("shieldToken", accounts => {
     });
   })
 
+  /*    To do
+
+      - payout testing
+      - reward harvesting when added
+
+
+  */
+
   describe('when rewards are harvested', function () {
     // it("should query correct balances", async () => {
     //   expect(1).to.equal(2);
@@ -224,5 +232,6 @@ contract("shieldToken", accounts => {
     //   expect(1).to.equal(2);
     // });
   })
+
 
 })
