@@ -4,12 +4,6 @@ const pToken = artifacts.require("pToken");
 const { BN, expectEvent, expectRevert } = require('@openzeppelin/test-helpers');
 const should = require("chai").should();
 const { expect } = require('chai');
-const { promisify } = require("util");
-const { utils } = web3;
-const { increaseTime } = require("./helpers");
-const truffleAssert = require("truffle-assertions");
-
-// Reference tests: https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/test/token/ERC20/ERC20.test.js
 
 contract("pToken", accounts => {
   const governance = accounts[0];
@@ -143,24 +137,6 @@ contract("pToken", accounts => {
       let finalAmount = new BN('2000000000000000000')
       expect(await targetpToken.getPricePerFullShare()).to.be.bignumber.equal(finalAmount);
     });
-  })
-
-  describe('when rewards are harvested', function () {
-    // it("should query correct balances", async () => {
-    //   expect(1).to.equal(2);
-    // });
-
-    // it("should be able to withdraw <= balance", async () => {
-    //   expect(1).to.equal(2);
-    // });
-
-    // it("should not be able to withdraw > balance", async () => {
-    //   expect(1).to.equal(2);
-    // });
-
-    // it("should calculate PricePerFullShare correctly", async () => {
-    //   expect(1).to.equal(2);
-    // });
   })
 
 })
