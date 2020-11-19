@@ -34,6 +34,23 @@ contract("shieldToken", accounts => {
       targetshieldToken = await shieldToken.new(pToken.address, ReserveToken.address, controller.address ,claimsManager)
     });
 
+
+    /*
+        Pausing
+    */
+    it("should not allow a non-governance address to pause", async () => {
+      await expectRevert(targetshieldToken.pause(
+        { from: notGovernance }), '!governance',
+      );
+    });
+
+    it("should allow the Governance address to pause", async () => {
+      await targetshieldToken.pause(
+        { from: governance }
+      )
+      expect(await targetshieldToken.paused()).to.equal(true);
+    });
+
     /*
         Setting governance address
     */
@@ -168,12 +185,12 @@ contract("shieldToken", accounts => {
     });
 
 
-    it("should  allow a claimsManager address to payout", async () => {
-      await targetshieldToken.payout(
-        { from: claimsManager }
-      )
-      expect(await targetshieldToken.balance()).to.be.bignumber.equal("0");
-    });
+    // it("should  allow a claimsManager address to payout", async () => {
+    //   await targetshieldToken.payout(
+    //     { from: claimsManager }
+    //   )
+    //   expect(await targetshieldToken.balance()).to.be.bignumber.equal("0");
+    // });
 
     
   })
@@ -192,6 +209,20 @@ contract("shieldToken", accounts => {
           10, { from: accountAlice }
         )
       );
+    });
+
+    it("should not allow a non-claimsManager address to payout", async () => {
+      await expectRevert(targetshieldToken.payout(
+        { from: notClaimsManager }), '!claimsManager',
+      );
+    });
+
+
+    it("should  allow a claimsManager address to payout, but it will be 0", async () => {
+      await targetshieldToken.payout(
+        { from: claimsManager }
+      )
+      expect(await targetshieldToken.balance()).to.be.bignumber.equal("0");
     });
 
     it("should not be able to get PricePerFullShare", async () => {
@@ -225,7 +256,7 @@ contract("shieldToken", accounts => {
       expect(await targetshieldToken.balanceOf(accountBob)).to.be.bignumber.equal('0');
     });
 
-    it("should be able to withdraw <= balance", async () => {
+    it("should be able to withdraw <= balance when (when not paused)", async () => {
       amount = new BN('10000000000000000000')
       await targetshieldToken.withdraw(amount, { from: governance})
 
@@ -251,11 +282,41 @@ contract("shieldToken", accounts => {
       let finalAmount = new BN('2000000000000000000')
       expect(await targetshieldToken.getPricePerFullShare()).to.be.bignumber.equal(finalAmount);
     });
+
+
+    it("should not allow a non-claimsManager address to payout", async () => {
+      await expectRevert(targetshieldToken.payout(
+        { from: notClaimsManager }), '!claimsManager',
+      );
+    });
+
+
+    it("should  allow a claimsManager address to payout", async () => {
+      await targetshieldToken.payout(
+        { from: claimsManager }
+      )
+      expect(await targetshieldToken.balance()).to.be.bignumber.equal("?");
+    });
+
+    
+    it("should not allow withdraws when paused", async () => {
+      amount = new BN('10000000000000000000')
+      await targetshieldToken.pause(
+        { from: governance }
+      )
+      await expectRevert.unspecified(
+        targetshieldToken.withdraw(
+          amount, { from: governance }
+        )
+      );
+    });
+
+
+    
   })
 
   /*    To do
 
-      - payout testing
       - reward harvesting when added
       - claims manager
 

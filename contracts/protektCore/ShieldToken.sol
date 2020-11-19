@@ -10,8 +10,17 @@ import "@openzeppelin/contracts/ownership/Ownable.sol";
 import "../../interfaces/yearn/IController.sol";
 import "../claimsManagers/interfaces/IClaimsManagerCore.sol";
 import "../protektCore/interfaces/IProtektToken.sol";
+import "../utils/Pausable.sol";
 
-contract ShieldToken is ERC20, ERC20Detailed {
+/*
+        TO-DO
+            - Make possible to pause withdraws
+            - if governance address -> option to pause withdraws
+            - then change this into an interface/inherit and extend it ()
+
+*/
+
+contract ShieldToken is ERC20, ERC20Detailed, Pausable {
     using SafeERC20 for IERC20;
     using Address for address;
     using SafeMath for uint256;
@@ -89,7 +98,7 @@ contract ShieldToken is ERC20, ERC20Detailed {
     }
 
     // No rebalance implementation for lower fees and faster swaps
-    function withdraw(uint256 _shares) public {
+    function withdraw(uint256 _shares) public whenNotPaused {
         uint256 r = (balance().mul(_shares)).div(totalSupply());
         _burn(msg.sender, _shares);
 
@@ -119,6 +128,15 @@ contract ShieldToken is ERC20, ERC20Detailed {
         depositToken.safeTransfer(protektToken.feeModel(), amount);
 
         return amount;
+    }
+
+    function pause() external {
+        require(msg.sender == governance, "!governance");
+        _pause();
+    }
+
+    function unpause() external {
+        _unpause();
     }
 
     // Custom logic in here for how much the vault allows to be borrowed
