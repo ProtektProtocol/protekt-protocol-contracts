@@ -5,7 +5,7 @@ const { BN, expectEvent, expectRevert } = require('@openzeppelin/test-helpers');
 const should = require("chai").should();
 const { expect } = require('chai');
 
-contract("pToken", accounts => {
+contract("pToken", async accounts => {
   const governance = accounts[0];
   const notGovernance = accounts[1];
   const accountAlice = accounts[2];
