@@ -19,6 +19,9 @@ contract("shieldToken", accounts => {
   const notGovernance = accounts[1];
   const accountAlice = accounts[2];
   const accountBob = accounts[3];
+  const claimsManager = accounts[4]
+  const notClaimsManager = accounts[5]
+
   let targetshieldToken, reserveToken, initialSupply, amount
   
   beforeEach(async function () {
@@ -28,7 +31,7 @@ contract("shieldToken", accounts => {
   describe('Governance features', function () {
     beforeEach(async function () {
       
-      targetshieldToken = await shieldToken.new(pToken.address, ReserveToken.address, controller.address ,governance)
+      targetshieldToken = await shieldToken.new(pToken.address, ReserveToken.address, controller.address ,claimsManager)
     });
 
     /*
@@ -102,6 +105,25 @@ contract("shieldToken", accounts => {
       expect(await targetshieldToken.protektToken()).equal(accountAlice); 
     });
 
+
+
+    /*
+        Setting claims manager - can't change this once created?
+    */ 
+
+  //  it("should not allow a non-governance address to set the claims manager", async () => {
+  //   await expectRevert(targetshieldToken.setProtektToken(
+  //     accountAlice, { from: notGovernance }), '!governance',
+  //   );
+  // });
+
+  // it("should allow the Governance address to set the claims manager", async () => {
+  //   await targetshieldToken.setProtektToken(
+  //     accountAlice, { from: governance }
+  //   )
+  //   expect(await targetshieldToken.protektToken()).equal(accountAlice); 
+  // });
+
     
 
 
@@ -130,6 +152,30 @@ contract("shieldToken", accounts => {
     //     amount: new BN(0)
     //   });
     // });
+  })
+
+  describe('Claims manager features', function () {
+    beforeEach(async function () {
+      
+      targetshieldToken = await shieldToken.new(pToken.address, ReserveToken.address, controller.address ,claimsManager)
+    });
+
+
+    it("should not allow a non-claimsManager address to payout", async () => {
+      await expectRevert(targetshieldToken.payout(
+        { from: notClaimsManager }), '!claimsManager',
+      );
+    });
+
+
+    it("should  allow a claimsManager address to payout", async () => {
+      await targetshieldToken.payout(
+        { from: claimsManager }
+      )
+      expect(await targetshieldToken.balance()).to.be.bignumber.equal("0");
+    });
+
+    
   })
 
   describe('when there are no deposits', function () {
@@ -162,7 +208,7 @@ contract("shieldToken", accounts => {
       reserveToken = await ReserveToken.new( {from: governance} )
       initialSupply = new BN('100000000000000000000000')
 
-      targetshieldToken = await shieldToken.new(pToken.address, reserveToken.address, controller.address ,governance)
+      targetshieldToken = await shieldToken.new(pToken.address, reserveToken.address, controller.address ,claimsManager)
       amount = new BN('20000000000000000000')
       await reserveToken.approve(
         targetshieldToken.address,
@@ -211,6 +257,7 @@ contract("shieldToken", accounts => {
 
       - payout testing
       - reward harvesting when added
+      - claims manager
 
 
   */
