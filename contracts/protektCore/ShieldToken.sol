@@ -12,13 +12,6 @@ import "../claimsManagers/interfaces/IClaimsManagerCore.sol";
 import "../protektCore/interfaces/IProtektToken.sol";
 import "../utils/Pausable.sol";
 
-/*
-        TO-DO
-            - Make possible to pause withdraws
-            - if governance address -> option to pause withdraws
-            - then change this into an interface/inherit and extend it ()
-
-*/
 
 contract ShieldToken is ERC20, ERC20Detailed, Pausable {
     using SafeERC20 for IERC20;
