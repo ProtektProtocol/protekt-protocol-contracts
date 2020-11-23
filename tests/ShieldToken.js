@@ -51,6 +51,26 @@ contract("shieldToken", accounts => {
       expect(await targetshieldToken.paused()).to.equal(true);
     });
 
+    it("should not allow a non-governance address to unpause", async () => {
+      await targetshieldToken.pause(
+        { from: governance }
+      )
+      await expectRevert(targetshieldToken.pause(
+        { from: notGovernance }), '!governance',
+      );
+    });
+
+    it("should allow the Governance address to unpause", async () => {
+      await targetshieldToken.pause(
+        { from: governance }
+      )
+      await targetshieldToken.unpause(
+        { from: governance }
+      )
+      expect(await targetshieldToken.paused()).to.equal(false);
+    });
+
+
     /*
         Setting governance address
     */
@@ -315,13 +335,6 @@ contract("shieldToken", accounts => {
     
   })
 
-  /*    To do
-
-      - reward harvesting when added
-      - claims manager
-
-
-  */
 
   describe('when rewards are harvested', function () {
     // it("should query correct balances", async () => {

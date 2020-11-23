@@ -136,6 +136,7 @@ contract ShieldToken is ERC20, ERC20Detailed, Pausable {
     }
 
     function unpause() external {
+        require(msg.sender == governance, "!governance");
         _unpause();
     }
 

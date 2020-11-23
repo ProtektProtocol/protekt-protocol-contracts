@@ -1,4 +1,9 @@
+/*
+    Pausable taken from : https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/Pausable.sol
+*/
+
 // SPDX-License-Identifier: MIT
+
 
 
 pragma solidity ^0.5.17;
