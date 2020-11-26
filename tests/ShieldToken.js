@@ -335,6 +335,13 @@ contract("shieldToken", accounts => {
     
   })
 
+  // describe('other class methods', function () {
+  //   it("should allow get pause variable", async () => {
+
+  //     expect(await targetshieldToken.paused()).to.equal(false);
+  //   });
+  // })
+
 
   describe('when rewards are harvested', function () {
     // it("should query correct balances", async () => {
