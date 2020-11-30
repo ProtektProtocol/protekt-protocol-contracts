@@ -9,7 +9,6 @@ const should = require("chai").should();
 const { expect } = require('chai');
 const { promisify } = require("util");
 const { utils } = web3;
-const { increaseTime } = require("./helpers");
 const truffleAssert = require("truffle-assertions");
 
 // Reference tests: https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/test/token/ERC20/ERC20.test.js

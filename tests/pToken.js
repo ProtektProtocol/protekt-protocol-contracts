@@ -4,19 +4,13 @@ const pToken = artifacts.require("pToken");
 const { BN, expectEvent, expectRevert } = require('@openzeppelin/test-helpers');
 const should = require("chai").should();
 const { expect } = require('chai');
-const { promisify } = require("util");
-const { utils } = web3;
-const { increaseTime } = require("./helpers");
-const truffleAssert = require("truffle-assertions");
 
-// Reference tests: https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/test/token/ERC20/ERC20.test.js
-
-contract("pToken", accounts => {
+contract("pToken", async accounts => {
   const governance = accounts[0];
   const notGovernance = accounts[1];
   const accountAlice = accounts[2];
   const accountBob = accounts[3];
-  let targetpToken, underlyingToken, initialSupply, amount
+  let targetpToken, underlyingToken, initialSupply, amount, logs
   
   beforeEach(async function () {
     targetpToken = await pToken.deployed();
@@ -52,22 +46,6 @@ contract("pToken", accounts => {
       )
       expect(await targetpToken.feeModel()).to.equal(accountAlice);
     });
-
-    it("should not allow a non-governance address to harvest rewards", async () => {
-      await expectRevert(targetpToken.harvestRewards(
-        { from: notGovernance }), '!governance',
-      );
-    });
-
-    // it("should allow the Governance address to harvest rewards", async () => {
-    //   await targetpToken.harvestRewards(
-    //     { from: governance }
-    //   )
-
-    //   expectEvent.inLogs(logs, 'HarvestRewards', {
-    //     amount: new BN(0)
-    //   });
-    // });
   })
 
   describe('when there are no deposits', function () {
@@ -101,7 +79,7 @@ contract("pToken", accounts => {
       initialSupply = new BN('100000000000000000000000')
 
       targetpToken = await pToken.new(underlyingToken.address, governance)
-      amount = new BN('20000000000000000000')
+      amount = new BN('30000000000000000000')
       await underlyingToken.approve(
         targetpToken.address,
         amount,
@@ -119,13 +97,23 @@ contract("pToken", accounts => {
 
     it("should be able to withdraw <= balance", async () => {
       amount = new BN('10000000000000000000')
+      let expectedRemaining = new BN('20000000000000000000')
       await targetpToken.withdraw(amount, { from: governance})
 
-      expect(await targetpToken.balanceOf(governance)).to.be.bignumber.equal(amount);
+      expect(await targetpToken.balanceOf(governance)).to.be.bignumber.equal(expectedRemaining);
+    });
+
+    it("should be harvest rewards when withdrawing", async () => {
+      amount = new BN('10000000000000000000')
+      const { logs } = await targetpToken.withdraw(amount, { from: governance})
+
+      expectEvent.inLogs(logs, 'HarvestRewards', {
+        amount: new BN('0')
+      });
     });
 
     it("should not be able to withdraw > balance", async () => {
-      amount = new BN('30000000000000000000')
+      amount = new BN('50000000000000000000')
       await expectRevert.unspecified(
         targetpToken.withdraw(
           amount, { from: governance }
@@ -140,27 +128,9 @@ contract("pToken", accounts => {
       amount = new BN('20000000000000000000')
       await underlyingToken.transfer(targetpToken.address, amount, { from: governance})
 
-      let finalAmount = new BN('2000000000000000000')
+      let finalAmount = new BN('1666666666666666666')
       expect(await targetpToken.getPricePerFullShare()).to.be.bignumber.equal(finalAmount);
     });
-  })
-
-  describe('when rewards are harvested', function () {
-    // it("should query correct balances", async () => {
-    //   expect(1).to.equal(2);
-    // });
-
-    // it("should be able to withdraw <= balance", async () => {
-    //   expect(1).to.equal(2);
-    // });
-
-    // it("should not be able to withdraw > balance", async () => {
-    //   expect(1).to.equal(2);
-    // });
-
-    // it("should calculate PricePerFullShare correctly", async () => {
-    //   expect(1).to.equal(2);
-    // });
   })
 
 })

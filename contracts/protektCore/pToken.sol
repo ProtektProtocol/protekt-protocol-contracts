@@ -6,10 +6,12 @@ import "@openzeppelin/contracts/utils/Address.sol";
 import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20Detailed.sol";
-import "@openzeppelin/contracts/ownership/Ownable.sol";
-import "../../interfaces/compound/ComptrollerInterface.sol";
+import "./helpers/HarvestRewardsCompoundDaiManual.sol";
 
-contract pToken is ERC20, ERC20Detailed {
+contract pToken is
+    ERC20,
+    ERC20Detailed,
+    HarvestRewardsCompoundDaiManual {
     using SafeERC20 for IERC20;
     using Address for address;
     using SafeMath for uint256;
@@ -18,12 +20,6 @@ contract pToken is ERC20, ERC20Detailed {
 
     address public feeModel;
     address public governance;
-
-    address public constant compComptroller = address(0x3d9819210A31b4961b30EF54bE2aeD79B9c9Cd3B);
-    address public constant comp = address(0xc00e94Cb662C3520282E6f5717214004A7f26888);
-    address public constant cdai = address(0x5d3a536E4D6DbD6114cc1Ead35777bAB948E3643);
-
-    event HarvestRewards(uint256 amount);
 
     constructor(address _depositToken, address _feeModel)
         public
@@ -76,21 +72,13 @@ contract pToken is ERC20, ERC20Detailed {
     }
 
     function harvestRewards() public {
-        require(msg.sender == governance, "!governance");
-
-        // Claim COMP from comptroller
-        ComptrollerInterface COMPtroller = ComptrollerInterface(compComptroller);
-        COMPtroller.claimComp(address(this));
-
-        // Transfer COMP to feeModel
-        uint256 amount = IERC20(cdai).balanceOf(address(this));
-        IERC20(cdai).safeTransfer(feeModel, amount);
-
-        emit HarvestRewards(amount); 
+        super.harvestRewards();
     }
 
-    // No rebalance implementation for lower fees and faster swaps
     function withdraw(uint256 _shares) public {
+        // Rewards are harvested for the current block before withdrawal
+        harvestRewards();
+
         uint256 r = (balance().mul(_shares)).div(totalSupply());
         _burn(msg.sender, _shares);
 
