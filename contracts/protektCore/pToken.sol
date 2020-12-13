@@ -7,6 +7,8 @@ import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20Detailed.sol";
 import "./helpers/HarvestRewardsCompoundDaiManual.sol";
+import "../claimsManagers/interfaces/IClaimsManagerCore.sol";
+import "../claimsManagers/ClaimsManagerSingleAccount.sol";
 
 contract pToken is
     ERC20,
@@ -20,8 +22,9 @@ contract pToken is
 
     address public feeModel;
     address public governance;
+    IClaimsManagerCore public claimsManager;
 
-    constructor(address _depositToken, address _feeModel)
+    constructor(address _depositToken, address _feeModel, address _claimsManager)
         public
         ERC20Detailed(
             string(abi.encodePacked("protekt ", ERC20Detailed(_depositToken).name())),
@@ -31,6 +34,7 @@ contract pToken is
     {
         depositToken = IERC20(_depositToken);
         feeModel = _feeModel;
+        claimsManager = IClaimsManagerCore(_claimsManager);
         governance = msg.sender;
     }
 
@@ -53,6 +57,9 @@ contract pToken is
     }
 
     function deposit(uint256 _amount) public {
+        if(!claimsManager.isReady()){
+            revert();
+        }
         uint256 _pool = balance();
         uint256 _before = depositToken.balanceOf(address(this));
         depositToken.safeTransferFrom(msg.sender, address(this), _amount);
