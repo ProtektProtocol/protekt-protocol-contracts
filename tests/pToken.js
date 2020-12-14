@@ -173,25 +173,29 @@ contract("pToken", async accounts => {
         { from: governance }
       );
       await targetpToken.deposit(amount, { from: governance})
-      // await claimsManager.setActivePayoutEvent(
-      //   true,{ from: governance }
-      // );
-      // await claimsManager.submitClaim(
-      //    { from: governance }
-      // );
+
       expect(await targetpToken.balance({from:governance})).to.be.bignumber.equal(amount);
     });
+
+    /*
+        Below not working - unsure why
+    */
 
     it("should not allow a deposit if status is paid", async () => {
       underlyingToken = await UnderlyingToken.new( {from: governance} )
 
       targetpToken = await pToken.new(underlyingToken.address, governance, claimsManager.address)
       amount = new BN('30000000000000000000')
+      investigationPeriod = 0 // new BN('0')
       await underlyingToken.approve(
         targetpToken.address,
         amount,
         { from: governance }
       );
+      await claimsManager.setInvestigationPeriod(
+        investigationPeriod, {from: governance}
+      );
+
       await claimsManager.setActivePayoutEvent(
         true,{ from: governance }
       );
@@ -199,7 +203,9 @@ contract("pToken", async accounts => {
          { from: governance }
       );
 
-      await claimsManager.payoutClaim();
+      await claimsManager.payoutClaim({
+        from:governance
+      });
       await expectRevert.unspecified(targetpToken.deposit(amount, { from: governance})
       );
     });
