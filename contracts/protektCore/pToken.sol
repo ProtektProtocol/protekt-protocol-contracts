@@ -8,7 +8,6 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20Detailed.sol";
 import "./helpers/HarvestRewardsCompoundDaiManual.sol";
 import "../claimsManagers/interfaces/IClaimsManagerCore.sol";
-import "../claimsManagers/ClaimsManagerSingleAccount.sol";
 
 contract pToken is
     ERC20,
@@ -57,9 +56,7 @@ contract pToken is
     }
 
     function deposit(uint256 _amount) public {
-        if(!claimsManager.isReady()){
-            revert();
-        }
+        require(claimsManager.isReady(),'!Ready');
         uint256 _pool = balance();
         uint256 _before = depositToken.balanceOf(address(this));
         depositToken.safeTransferFrom(msg.sender, address(this), _amount);

@@ -158,8 +158,7 @@ contract("pToken", async accounts => {
       await claimsManager.submitClaim(
          { from: governance }
       );
-      await expectRevert.unspecified(targetpToken.deposit(amount, { from: governance})
-      );
+      await expectRevert(targetpToken.deposit(amount, { from: governance}),'!Ready');
     });
 
     it("should allow a deposit if status is ready", async () => {
@@ -206,8 +205,7 @@ contract("pToken", async accounts => {
       await claimsManager.payoutClaim({
         from:governance
       });
-      await expectRevert.unspecified(targetpToken.deposit(amount, { from: governance})
-      );
+      await expectRevert(targetpToken.deposit(amount, { from: governance}), '!Ready');
     });
 
     

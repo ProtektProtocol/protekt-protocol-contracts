@@ -21,19 +21,15 @@ module.exports = function (deployer, network, accounts) {
   // ===================================================================
 
 
-    /*
-        Move claims manager before pToken so could use it when deploying
-    */
-
-    // 4) Launch ClaimsManager (ClaimsManagerSingleAccount) ==============
+  // 2) Launch ClaimsManager (ClaimsManagerSingleAccount) ==============
     return deployer.deploy(ClaimsManager);
     }).then(function(instance) {
       claimsManager = instance
-    // ===================================================================
+  // ===================================================================
 
 
 
-  // 2) Launch pToken =====================================================
+  // 3) Launch pToken =====================================================
   // Fee model contract = governance address
     return deployer.deploy(pToken, underlyingToken.address, accounts[0],claimsManager.address);
   }).then(function(instance) {
@@ -42,7 +38,7 @@ module.exports = function (deployer, network, accounts) {
 
 
 
-  // 3) Launch Investment Strategy (StrategyHodl) ======================
+  // 4) Launch Investment Strategy (StrategyHodl) ======================
     return deployer.deploy(Controller, reserveToken.address);
   }).then(function(instance) {
     shieldController = instance
