@@ -18,11 +18,30 @@
  *
  */
 
-// const HDWalletProvider = require('@truffle/hdwallet-provider');
-// const infuraKey = "fj4jll3k.....";
-//
-// const fs = require('fs');
-// const mnemonic = fs.readFileSync(".secret").toString().trim();
+const HDWalletProvider = require("@truffle/hdwallet-provider");
+const fs = require("fs");
+const path = require("path");
+const ganacheMnemonic =
+  "mobile erosion season author plug wild reopen volcano fatigue random shoot tiger";
+
+function walletProvider(filepath) {
+  if (fs.existsSync(filepath)) {
+    return () => {
+      const file = fs.readFileSync(path.join(__dirname, filepath), "utf8");
+      let { mnemonic, providerUrl } = JSON.parse(file);
+      var HDWalletProvider = require("@truffle/hdwallet-provider");
+
+      return new HDWalletProvider(mnemonic, providerUrl, 0, 3);
+    };
+  } else {
+    return () => {
+      throw "uh oh, you don't have that mnemonic";
+    };
+  }
+}
+
+const gas = 6250000;
+const gasPrice = 3000000000;
 
 module.exports = {
   /**
@@ -47,6 +66,16 @@ module.exports = {
      port: 7545,            // Standard Ethereum port (default: none)
      network_id: "*",       // Any network (default: none)
     },
+    rinkeby: {
+      confirmations: 2,
+      provider: walletProvider("secrets_rinkeby.json"),
+      network_id: 4
+    },
+
+
+
+
+    
     // Another network with more advanced options...
     // advanced: {
     // port: 8777,             // Custom port
