@@ -67,15 +67,20 @@ module.exports = {
      network_id: "*",       // Any network (default: none)
     },
     rinkeby: {
-      confirmations: 2,
+      confirmations: 1,
       provider: walletProvider("secrets_rinkeby.json"),
-      network_id: 4
+      network_id: 4,
+      networkCheckTimeout: 10000000,
+      skipDryRun: true
     },
+    main: {
+      provider: walletProvider("secrets_mainnet.json"),
+      network_id: 1
+    }
 
 
 
 
-    
     // Another network with more advanced options...
     // advanced: {
     // port: 8777,             // Custom port
