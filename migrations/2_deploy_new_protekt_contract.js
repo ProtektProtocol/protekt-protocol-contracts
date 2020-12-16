@@ -20,21 +20,25 @@ module.exports = function (deployer, network, accounts) {
     reserveToken = instance
   // ===================================================================
 
-  // console.log('accounts')
-  // console.log(accounts)
-  // console.log('---')
-  // console.log(accounts[0])
 
-  // 2) Launch pToken =====================================================
+  // 2) Launch ClaimsManager (ClaimsManagerSingleAccount) ==============
+    return deployer.deploy(ClaimsManager);
+    }).then(function(instance) {
+      claimsManager = instance
+  // ===================================================================
+
+
+
+  // 3) Launch pToken =====================================================
   // Fee model contract = governance address
-    return deployer.deploy(pToken, underlyingToken.address, accounts[0]);
+    return deployer.deploy(pToken, underlyingToken.address, accounts[0],claimsManager.address);
   }).then(function(instance) {
     protektToken = instance
   // ===================================================================
 
 
 
-  // 3) Launch Investment Strategy (StrategyHodl) ======================
+  // 4) Launch Investment Strategy (StrategyHodl) ======================
     return deployer.deploy(Controller, reserveToken.address);
   }).then(function(instance) {
     shieldController = instance
@@ -45,13 +49,6 @@ module.exports = function (deployer, network, accounts) {
     shieldController.setStrategy(reserveToken.address, shieldStrategy.address)
   // ===================================================================
 
-
-
-  // 4) Launch ClaimsManager (ClaimsManagerSingleAccount) ==============
-    return deployer.deploy(ClaimsManager);
-  }).then(function(instance) {
-    claimsManager = instance
-  // ===================================================================
 
 
 

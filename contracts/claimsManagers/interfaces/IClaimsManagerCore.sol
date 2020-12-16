@@ -2,9 +2,9 @@ pragma solidity ^0.5.17;
 
 interface IClaimsManagerCore {
 	enum ClaimsStatus {
-		Active,
+		Ready,
 		Investigating,
-		ClaimAccepted
+		Paid
 	}
 
 	// Setters
@@ -21,4 +21,7 @@ interface IClaimsManagerCore {
 	function investigationPeriod() external returns (uint256);
 	function currentInvestigationPeriodEnd() external returns (uint256);
 	function activePayoutEvent() external returns (bool);
+
+	// Getters
+	function isReady() external returns(bool);
 }
