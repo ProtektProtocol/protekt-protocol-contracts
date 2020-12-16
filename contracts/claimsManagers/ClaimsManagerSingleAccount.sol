@@ -25,7 +25,7 @@ contract ClaimsManagerSingleAccount {
     	currentInvestigationPeriodEnd = 0;
     	activePayoutEvent = false;
     	governance = msg.sender;
-		status = ClaimsStatus.Ready;
+      status = ClaimsStatus.Ready;
     }
 
     function setShieldToken(address _shieldToken) external {

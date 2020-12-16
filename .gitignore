@@ -109,3 +109,5 @@ __pycache__
 build/
 reports/
 node_modules/
+
+secrets_*

@@ -1,6 +1,7 @@
 const UnderlyingToken = artifacts.require("UnderlyingToken");
 const ClaimsManagerSingleAccount = artifacts.require("ClaimsManagerSingleAccount")
 const pToken = artifacts.require("pToken");
+const ShieldToken = artifacts.require("ShieldToken");
 
 const { BN, expectEvent, expectRevert } = require('@openzeppelin/test-helpers');
 const should = require("chai").should();
@@ -11,7 +12,7 @@ contract("pToken", async accounts => {
   const notGovernance = accounts[1];
   const accountAlice = accounts[2];
   const accountBob = accounts[3];
-  let targetpToken, underlyingToken, initialSupply, amount, logs
+  let targetpToken, underlyingToken, amount, logs
   
   beforeEach(async function () {
     targetpToken = await pToken.deployed();
@@ -79,7 +80,6 @@ contract("pToken", async accounts => {
     beforeEach(async function () {
       underlyingToken = await UnderlyingToken.new( {from: governance} )
       claimsManager = await ClaimsManagerSingleAccount.new( {from: governance} )
-      initialSupply = new BN('100000000000000000000000')
 
       targetpToken = await pToken.new(underlyingToken.address, governance, claimsManager.address)
       amount = new BN('30000000000000000000')
@@ -138,33 +138,17 @@ contract("pToken", async accounts => {
 
   describe('Claims Manager features', function () {
     beforeEach(async function () {
-      claimsManager = await ClaimsManagerSingleAccount.new( {from: governance} )
-      targetpToken = await pToken.new(UnderlyingToken.address, governance, claimsManager.address)
-    });
-
-    it("should not allow a deposit if status is investigating", async () => {
       underlyingToken = await UnderlyingToken.new( {from: governance} )
-
+      claimsManager = await ClaimsManagerSingleAccount.new( {from: governance} )
       targetpToken = await pToken.new(underlyingToken.address, governance, claimsManager.address)
-      amount = new BN('30000000000000000000')
-      await underlyingToken.approve(
-        targetpToken.address,
-        amount,
-        { from: governance }
-      );
-      await claimsManager.setActivePayoutEvent(
-        true,{ from: governance }
-      );
-      await claimsManager.submitClaim(
-         { from: governance }
-      );
-      await expectRevert(targetpToken.deposit(amount, { from: governance}),'!Ready');
+      let shieldToken = await ShieldToken.new(targetpToken.address, underlyingToken.address, governance, claimsManager.address)
+
+      await claimsManager.setShieldToken(
+        shieldToken.address, { from: governance }
+      )
     });
 
     it("should allow a deposit if status is ready", async () => {
-      underlyingToken = await UnderlyingToken.new( {from: governance} )
-
-      targetpToken = await pToken.new(underlyingToken.address, governance, claimsManager.address)
       amount = new BN('1000000000000000000')
       await underlyingToken.approve(
         targetpToken.address,
@@ -176,14 +160,23 @@ contract("pToken", async accounts => {
       expect(await targetpToken.balance({from:governance})).to.be.bignumber.equal(amount);
     });
 
-    /*
-        Below not working - unsure why
-    */
+    it("should not allow a deposit if status is investigating", async () => {
+      amount = new BN('30000000000000000000')
+      await underlyingToken.approve(
+        targetpToken.address,
+        amount,
+        { from: governance }
+      );
+      await claimsManager.setActivePayoutEvent(
+        true, { from: governance }
+      );
+      await claimsManager.submitClaim(
+        { from: governance }
+      );
+      await expectRevert(targetpToken.deposit(amount, { from: governance}),'!Ready');
+    });
 
     it("should not allow a deposit if status is paid", async () => {
-      underlyingToken = await UnderlyingToken.new( {from: governance} )
-
-      targetpToken = await pToken.new(underlyingToken.address, governance, claimsManager.address)
       amount = new BN('30000000000000000000')
       investigationPeriod = 0 // new BN('0')
       await underlyingToken.approve(
@@ -196,19 +189,17 @@ contract("pToken", async accounts => {
       );
 
       await claimsManager.setActivePayoutEvent(
-        true,{ from: governance }
+        true, { from: governance }
       );
       await claimsManager.submitClaim(
-         { from: governance }
+        { from: governance }
       );
 
-      await claimsManager.payoutClaim({
-        from:governance
-      });
+      await claimsManager.payoutClaim(
+        { from: governance }
+      );
       await expectRevert(targetpToken.deposit(amount, { from: governance}), '!Ready');
     });
-
-    
   })
 
 })
