@@ -38,9 +38,9 @@ contract ShieldToken is ERC20, ERC20Detailed, Pausable {
     {
         protektToken = IProtektToken(_protektToken);
         depositToken = IERC20(_depositToken);
+        controller = _controller;
         claimsManager = IClaimsManagerCore(_claimsManager);
         governance = msg.sender;
-        controller = _controller;
     }
 
     function balance() public view returns (uint256) {
@@ -117,7 +117,7 @@ contract ShieldToken is ERC20, ERC20Detailed, Pausable {
     function payout() external returns (uint256) {
         require(msg.sender == address(claimsManager), "!claimsManager");
 
-        uint256 amount = balanceOf(address(this));
+        uint256 amount = depositToken.balanceOf(address(this));
         depositToken.safeTransfer(protektToken.feeModel(), amount);
 
         return amount;

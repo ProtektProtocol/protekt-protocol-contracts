@@ -21,7 +21,7 @@ contract("shieldToken", accounts => {
   const claimsManager = accounts[4]
   const notClaimsManager = accounts[5]
 
-  let targetshieldToken, reserveToken, initialSupply, amount
+  let targetshieldToken, reserveToken, initialSupply, amount, finalAmount
   
   beforeEach(async function () {
     targetshieldToken = await shieldToken.deployed();
@@ -29,14 +29,13 @@ contract("shieldToken", accounts => {
 
   describe('Governance features', function () {
     beforeEach(async function () {
-      
       targetshieldToken = await shieldToken.new(pToken.address, ReserveToken.address, controller.address ,claimsManager)
     });
-
 
     /*
         Pausing
     */
+
     it("should not allow a non-governance address to pause", async () => {
       await expectRevert(targetshieldToken.pause(
         { from: notGovernance }), '!governance',
@@ -122,8 +121,6 @@ contract("shieldToken", accounts => {
       expect(await targetshieldToken.controller()).equal(accountAlice);
     });
 
-
-
     /*
         Setting protekt token
     */
@@ -140,62 +137,12 @@ contract("shieldToken", accounts => {
       )
       expect(await targetshieldToken.protektToken()).equal(accountAlice); 
     });
-
-
-
-    /*
-        Setting claims manager - can't change this once created?
-    */ 
-
-  //  it("should not allow a non-governance address to set the claims manager", async () => {
-  //   await expectRevert(targetshieldToken.setProtektToken(
-  //     accountAlice, { from: notGovernance }), '!governance',
-  //   );
-  // });
-
-  // it("should allow the Governance address to set the claims manager", async () => {
-  //   await targetshieldToken.setProtektToken(
-  //     accountAlice, { from: governance }
-  //   )
-  //   expect(await targetshieldToken.protektToken()).equal(accountAlice); 
-  // });
-
-    
-
-
-
-    // these don't exist in shield or are commented out
-    
-    // it("should allow the Governance address to set the feeModal address", async () => {
-    //   await targetshieldToken.setFeeModel(
-    //     accountAlice, { from: governance }
-    //   )
-    //   expect(await targetshieldToken.feeModel()).to.equal(accountAlice);
-    // });
-
-    // it("should not allow a non-governance address to harvest rewards", async () => {
-    //   await expectRevert(targetshieldToken.harvestRewards(
-    //     { from: notGovernance }), '!governance',
-    //   );
-    // });
-
-    // it("should allow the Governance address to harvest rewards", async () => {
-    //   await targetshieldToken.harvestRewards(
-    //     { from: governance }
-    //   )
-
-    //   expectEvent.inLogs(logs, 'HarvestRewards', {
-    //     amount: new BN(0)
-    //   });
-    // });
   })
 
-  describe('Claims manager features', function () {
+  describe('Claims Manager features', function () {
     beforeEach(async function () {
-      
-      targetshieldToken = await shieldToken.new(pToken.address, ReserveToken.address, controller.address ,claimsManager)
+      targetshieldToken = await shieldToken.new(pToken.address, ReserveToken.address, controller.address, claimsManager)
     });
-
 
     it("should not allow a non-claimsManager address to payout", async () => {
       await expectRevert(targetshieldToken.payout(
@@ -203,18 +150,19 @@ contract("shieldToken", accounts => {
       );
     });
 
-
-    // it("should  allow a claimsManager address to payout", async () => {
-    //   await targetshieldToken.payout(
-    //     { from: claimsManager }
-    //   )
-    //   expect(await targetshieldToken.balance()).to.be.bignumber.equal("0");
-    // });
-
-    
+    it("should allow a claimsManager address to payout", async () => {
+      await targetshieldToken.payout(
+        { from: claimsManager }
+      )
+      expect(await targetshieldToken.balance()).to.be.bignumber.equal("0");
+    });
   })
 
   describe('when there are no deposits', function () {
+    beforeEach(async function () {
+      targetshieldToken = await shieldToken.new(pToken.address, ReserveToken.address, controller.address ,claimsManager)
+    });
+
     it("should have all balances of 0", async () => {
       expect(await targetshieldToken.balanceOf(governance)).to.be.bignumber.equal('0');
       expect(await targetshieldToken.balanceOf(notGovernance)).to.be.bignumber.equal('0');
@@ -236,8 +184,7 @@ contract("shieldToken", accounts => {
       );
     });
 
-
-    it("should  allow a claimsManager address to payout, but it will be 0", async () => {
+    it("should allow a claimsManager address to payout, but it will be 0", async () => {
       await targetshieldToken.payout(
         { from: claimsManager }
       )
@@ -298,7 +245,7 @@ contract("shieldToken", accounts => {
       amount = new BN('20000000000000000000')
       await reserveToken.transfer(targetshieldToken.address, amount, { from: governance})
 
-      let finalAmount = new BN('2000000000000000000')
+      finalAmount = new BN('2000000000000000000')
       expect(await targetshieldToken.getPricePerFullShare()).to.be.bignumber.equal(finalAmount);
     });
 
@@ -310,11 +257,11 @@ contract("shieldToken", accounts => {
     });
 
 
-    it("should  allow a claimsManager address to payout", async () => {
+    it("should allow a claimsManager address to payout", async () => {
       await targetshieldToken.payout(
         { from: claimsManager }
       )
-      expect(await targetshieldToken.balance()).to.be.bignumber.equal("?");
+      expect(await reserveToken.balanceOf(targetshieldToken.address)).to.be.bignumber.equal(new BN('0'));
     });
 
     

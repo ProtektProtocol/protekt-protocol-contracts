@@ -112,4 +112,4 @@ node_modules/
 
 secrets_rinkeby.json
 secrets_kovan.json
-
+secrets_*

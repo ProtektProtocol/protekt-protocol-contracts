@@ -2,9 +2,9 @@ pragma solidity ^0.5.17;
 
 interface IClaimsManagerSingleAccount {
 	enum ClaimsStatus {
-		Active,
+		Ready,
 		Investigating,
-		ClaimAccepted
+		Paid
 	}
 
 	// Setters

@@ -25,6 +25,7 @@ contract ClaimsManagerSingleAccount {
     	currentInvestigationPeriodEnd = 0;
     	activePayoutEvent = false;
     	governance = msg.sender;
+      status = ClaimsStatus.Ready;
     }
 
     function setShieldToken(address _shieldToken) external {
@@ -80,6 +81,10 @@ contract ClaimsManagerSingleAccount {
 			currentInvestigationPeriodEnd = 0;
 			status = ClaimsStatus.Ready;
 		}
+	}
+
+	function isReady() public view returns(bool){
+		return (status == ClaimsStatus.Ready);
 	}
 }
 
