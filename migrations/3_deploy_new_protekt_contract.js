@@ -17,28 +17,28 @@ module.exports = async function (deployer, network, accounts) {
     underlyingToken = await UnderlyingToken.deployed()
     reserveToken = await ReserveToken.deployed()    
   // }
-
   // ===================================================================
 
 
-  // 2) Launch pToken =====================================================
+
+  // 2) Launch ClaimsManager (ClaimsManagerSingleAccount) ==============
+    claimsManager = await deployer.deploy(ClaimsManager);
+  // ===================================================================
+
+
+
+  // 3) Launch pToken =====================================================
   // Fee model contract = governance address
-  protektToken = await deployer.deploy(pToken, underlyingToken.address, accounts[0]);
+  protektToken = await deployer.deploy(pToken, underlyingToken.address, accounts[0], claimsManager.address);
   // ===================================================================
 
 
 
-  // 3) Launch Investment Strategy (StrategyHodl) ======================
-  shieldController = await deployer.deploy(Controller, reserveToken.address, {gas: 10000000});
+  // 4) Launch Investment Strategy (StrategyHodl) ======================
+  shieldController = await deployer.deploy(Controller, reserveToken.address);
   shieldStrategy = await deployer.deploy(ShieldStrategy, shieldController.address);
   await shieldController.approveStrategy(reserveToken.address, shieldStrategy.address)
   await shieldController.setStrategy(reserveToken.address, shieldStrategy.address)
-  // ===================================================================
-
-
-
-  // 4) Launch ClaimsManager (ClaimsManagerSingleAccount) ==============
-  claimsManager = await deployer.deploy(ClaimsManager);
   // ===================================================================
 
 
@@ -48,8 +48,7 @@ module.exports = async function (deployer, network, accounts) {
       ShieldToken,
       protektToken.address,
       reserveToken.address,
-      accounts[0],
-      // shieldController.address,
+      shieldController.address,
       claimsManager.address
     );
   await claimsManager.setShieldToken(shieldToken.address)
