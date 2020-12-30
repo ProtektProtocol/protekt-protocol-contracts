@@ -1,4 +1,4 @@
-const TToken = artifacts.require("TToken");
+ const TToken = artifacts.require("TToken");
 const Redeem = artifacts.require("ProtektRedeem");
 const { utils } = web3;
 
@@ -11,7 +11,5 @@ module.exports = (deployer, network, accounts) => {
 
     await deployer.deploy(Redeem, token.address);
     const redeem = await Redeem.deployed();
-
-    await token.transfer(redeem.address, utils.toWei("20000"));
   });
 };
