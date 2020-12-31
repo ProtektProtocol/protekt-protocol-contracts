@@ -15,8 +15,8 @@ contract HarvestRewardsCompoundDaiManual {
 
     address public feeModel;
 
-    address public constant compComptroller = address(0x3d9819210a31b4961b30ef54be2aed79b9c9cd3b);
-    address public constant comp = address(0xc00e94cb662c3520282e6f5717214004a7f26888);
+    address public constant compComptroller = address(0x3d9819210A31b4961b30EF54bE2aeD79B9c9Cd3B);
+    address public constant comp = address(0xc00e94Cb662C3520282E6f5717214004A7f26888);
 
     event HarvestRewards(uint256 amount);
 
