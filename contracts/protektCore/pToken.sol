@@ -28,7 +28,7 @@ contract pToken is
         ERC20Detailed(
             string(abi.encodePacked("protekt ", ERC20Detailed(_depositToken).name())),
             string(abi.encodePacked("p", ERC20Detailed(_depositToken).symbol())),
-            ERC20Detailed(_depositToken).decimals()
+            18
         )
     {
         depositToken = IERC20(_depositToken);
