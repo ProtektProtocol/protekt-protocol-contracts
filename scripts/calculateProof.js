@@ -5,6 +5,7 @@ const { MerkleTree } = require("./merkleTree");
 const { utils } = web3;
 const fs = require("fs");
 const { loadTree } = require("./loadTree");
+const repo = `https://raw.githubusercontent.com/ProtektProtocol/protekt-mining-scripts/master`
 
 module.exports = function(callback) {
   console.log("File Path Arg (must be absolute):", process.argv[4]);

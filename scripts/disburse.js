@@ -22,8 +22,8 @@ module.exports = async function(callback) {
   const root = merkleTree.getHexRoot();
   console.log("Tree: ", root);
 
-  let redeemAddress = '0x6FfCE98Dc7284292656FA049855d70907A094B06';
-  let rewardTokenAddress = '0xDD45fc356a0ac7296f24349e1F5CDaA4D20597fB';
+  let redeemAddress = '0xa67fC90d27f4901DF1AA23EFb0E7a14248E64d76';
+  let rewardTokenAddress = '0x235354F906fcaDE94b9d8d1E4a91153628CFd90C';
 
   console.log(`\n\n// TO FINISH THIS WEEK`);
   console.log(`let redeem = await ProtektRedeem.at(${redeemAddress});`);

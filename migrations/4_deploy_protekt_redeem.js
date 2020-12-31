@@ -1,4 +1,7 @@
- const TToken = artifacts.require("TToken");
+// Commands
+// truffle migrate --network rinkeby --f 4
+
+const TToken = artifacts.require("TToken");
 const Redeem = artifacts.require("ProtektRedeem");
 const { utils } = web3;
 

@@ -75,6 +75,13 @@ module.exports = {
       networkCheckTimeout: 10000000,
       skipDryRun: true
     },
+    kovan: {
+      confirmations: 1,
+      provider: walletProvider("secrets_kovan.json"),
+      network_id: 42,
+      networkCheckTimeout: 10000000,
+      skipDryRun: true
+    },
     main: {
       provider: walletProvider("secrets_mainnet.json"),
       network_id: 1
