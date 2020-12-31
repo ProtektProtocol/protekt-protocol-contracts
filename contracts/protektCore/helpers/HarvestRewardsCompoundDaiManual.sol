@@ -15,9 +15,8 @@ contract HarvestRewardsCompoundDaiManual {
 
     address public feeModel;
 
-    address public constant compComptroller = address(0x3d9819210A31b4961b30EF54bE2aeD79B9c9Cd3B);
-    address public constant comp = address(0xc00e94Cb662C3520282E6f5717214004A7f26888);
-    address public constant cdai = address(0x5d3a536E4D6DbD6114cc1Ead35777bAB948E3643);
+    address public constant compComptroller = address(0x3d9819210a31b4961b30ef54be2aed79b9c9cd3b);
+    address public constant comp = address(0xc00e94cb662c3520282e6f5717214004a7f26888);
 
     event HarvestRewards(uint256 amount);
 
@@ -26,12 +25,12 @@ contract HarvestRewardsCompoundDaiManual {
      */
     function harvestRewards() public {
         // Claim COMP from comptroller
-        // ComptrollerInterface COMPtroller = ComptrollerInterface(compComptroller);
-        // COMPtroller.claimComp(address(this));
+        ComptrollerInterface COMPtroller = ComptrollerInterface(compComptroller);
+        COMPtroller.claimComp(address(this));
 
         // Transfer COMP to feeModel
-        // uint256 amount = IERC20(comp).balanceOf(address(this));
-        // IERC20(comp).safeTransfer(feeModel, amount);
+        uint256 amount = IERC20(comp).balanceOf(address(this));
+        IERC20(comp).safeTransfer(feeModel, amount);
 
         // emit HarvestRewards(amount);
         emit HarvestRewards(0);
