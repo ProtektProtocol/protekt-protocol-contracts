@@ -28,7 +28,7 @@ contract pToken is
         ERC20Detailed(
             string(abi.encodePacked("protekt ", ERC20Detailed(_depositToken).name())),
             string(abi.encodePacked("p", ERC20Detailed(_depositToken).symbol())),
-            18
+            ERC20Detailed(_depositToken).decimals()
         )
     {
         depositToken = IERC20(_depositToken);
@@ -40,7 +40,7 @@ contract pToken is
     function balance() public view returns (uint256) {
         return depositToken.balanceOf(address(this));
     }
-
+    
     function setGovernance(address _governance) public {
         require(msg.sender == governance, "!governance");
         governance = _governance;

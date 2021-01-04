@@ -33,7 +33,7 @@ contract ShieldToken is ERC20, ERC20Detailed, Pausable {
         ERC20Detailed(
             string(abi.encodePacked("shield ", ERC20Detailed(_protektToken).name())),
             string(abi.encodePacked("sh", ERC20Detailed(_protektToken).symbol())),
-            18
+            ERC20Detailed(_depositToken).decimals()
         )
     {
         protektToken = IProtektToken(_protektToken);
