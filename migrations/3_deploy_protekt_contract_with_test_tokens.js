@@ -64,7 +64,8 @@ module.exports = async function (deployer, network, accounts) {
   console.log('-----')
   console.log('# pToken')
   console.log('Protekt Token: ', protektToken.address)
-  console.log('Fee Model Contract: ', protektToken.address)
+  let feeModelAddress = await protektToken.feeModel();
+  console.log('Fee Model Contract: ', feeModelAddress)
   console.log('-----')
   console.log('-----')
   console.log('# ShieldToken')
