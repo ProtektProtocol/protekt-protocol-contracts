@@ -14,15 +14,15 @@ module.exports = async function (deployer, network, accounts) {
 
   // 1) Get TestTokens =================================================
   // if(network === 'development') {
-    underlyingToken = await UnderlyingToken.deployed()
-    reserveToken = await ReserveToken.deployed()    
+  underlyingToken = await UnderlyingToken.deployed();
+  reserveToken = await ReserveToken.deployed();
   // }
   // ===================================================================
 
 
 
   // 2) Launch ClaimsManager (ClaimsManagerSingleAccount) ==============
-    claimsManager = await deployer.deploy(ClaimsManager);
+  claimsManager = await deployer.deploy(ClaimsManager);
   // ===================================================================
 
 

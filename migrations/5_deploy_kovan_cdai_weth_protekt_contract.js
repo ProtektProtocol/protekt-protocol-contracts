@@ -1,5 +1,6 @@
 // truffle deploy --network kovan --f 5 --skip-dry-run --reset
-
+const ReserveToken = artifacts.require("ReserveToken");
+const UnderlyingToken = artifacts.require("UnderlyingToken");
 const pToken = artifacts.require("pToken");
 const Controller = artifacts.require("Controller");
 const ShieldStrategy = artifacts.require("StrategyHodl");
@@ -9,6 +10,11 @@ const ShieldToken = artifacts.require("ShieldToken");
 module.exports = async function (deployer, network, accounts) {
   let protektToken
   let shieldController, shieldStrategy, shieldToken, claimsManager
+  let underlyingToken, reserveToken
+
+  // Not used. cDAI and WETH are used instead.
+  underlyingToken = await UnderlyingToken.deployed();
+  reserveToken = await ReserveToken.deployed();
 
   // Kovan cDAI address
   let underlyingTokenAddress = "0xf0d0eb522cfa50b716b3b1604c4f0fa6f04376ad"
@@ -17,10 +23,11 @@ module.exports = async function (deployer, network, accounts) {
   let reserveTokenAddress = "0xd0a1e359811322d97991e03f863a0c30c2cf029c"
 
   // 1) Check correct network =================================================
-    if(network!=="kovan"){
-        throw "********** \n !kovan network \n ****************"
-    }
+  if(network!=="kovan"){
+      throw "********** \n !kovan network \n ****************"
+  }
   // ===================================================================
+
 
   // 2) Launch ClaimsManager (ClaimsManagerSingleAccount) ==============
   claimsManager = await deployer.deploy(ClaimsManager);

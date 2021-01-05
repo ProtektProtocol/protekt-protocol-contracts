@@ -14,10 +14,10 @@ module.exports = function (deployer, network, accounts) {
   // ===================================================================
 
     // Output ==============================================================
-    console.log('# TestTokens')
-    console.log('Underlying Token: ', underlyingToken.address)
-    console.log('Reserve Token: ', reserveToken.address)
-    console.log('-----')
-    console.log('-----')
+    // console.log('# TestTokens')
+    // console.log('Underlying Token: ', underlyingToken.address)
+    // console.log('Reserve Token: ', reserveToken.address)
+    // console.log('-----')
+    // console.log('-----')
   })
 };
