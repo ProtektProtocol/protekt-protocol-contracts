@@ -20,12 +20,12 @@ module.exports = async function (deployer, network, accounts) {
   console.log(network)
   console.log("************")
 
-  if(network === "test" || network === "develop"){
+  if( network === "develop"){
     underlyingTokenAddress = underlyingToken.address // TESTU
     reserveTokenAddress = reserveToken.address // TESTR
   }
 
-  if(network ==="main"){
+  if(network ==="main" || network === "test"){
     underlyingTokenAddress = "0x5d3a536e4d6dbd6114cc1ead35777bab948e3643" //mainnet cDAI
     reserveTokenAddress = "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2" // mainnet WETH
   }
