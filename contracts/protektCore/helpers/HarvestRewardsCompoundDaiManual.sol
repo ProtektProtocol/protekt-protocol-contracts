@@ -37,11 +37,7 @@ contract HarvestRewardsCompoundDaiManual {
         uint256 amount = IERC20(comp).balanceOf(address(this));
         IERC20(comp).safeTransfer(feeModel, amount);
 
-<<<<<<< HEAD
-        // emit HarvestRewards(amount);
-=======
         emit HarvestRewards(amount);
->>>>>>> 9e4c3074cc1536dd767eb59f540cc61e6c392a42
-        emit HarvestRewards(0);
+        // emit HarvestRewards(0);
     }
 }
