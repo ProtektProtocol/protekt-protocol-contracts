@@ -24,6 +24,8 @@ const path = require("path");
 const ganacheMnemonic =
   "mobile erosion season author plug wild reopen volcano fatigue random shoot tiger";
 
+const teamsMnemonic = "dragon tank help trial remind human cereal glare crew retire metal bunker"
+
 function walletProvider(filepath) {
   if (fs.existsSync(filepath)) {
     return () => {
@@ -85,7 +87,14 @@ module.exports = {
     main: {
       provider: walletProvider("secrets_mainnet.json"),
       network_id: 1
+    },
+    teams:{
+      provider: walletProvider("secrets_teams.json"),
+      networkCheckTimeout: 10000000,
+      skipDryRun: true,
+      network_id: "*",
     }
+
 
 
 
