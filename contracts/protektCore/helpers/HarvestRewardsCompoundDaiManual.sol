@@ -33,11 +33,11 @@ contract HarvestRewardsCompoundDaiManual {
         // ComptrollerInterface COMPtroller = ComptrollerInterface(compComptroller);
         // COMPtroller.claimComp(address(this));
 
-        // Transfer COMP to feeModel
-        uint256 amount = IERC20(comp).balanceOf(address(this));
-        IERC20(comp).safeTransfer(feeModel, amount);
+        // // Transfer COMP to feeModel
+        // uint256 amount = IERC20(comp).balanceOf(address(this));
+        // IERC20(comp).safeTransfer(feeModel, amount);
 
         // emit HarvestRewards(amount);
-        emit HarvestRewards(0);
+        // emit HarvestRewards(0);
     }
 }
