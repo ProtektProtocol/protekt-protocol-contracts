@@ -12,10 +12,21 @@ module.exports = async function (deployer, network, accounts) {
   let shieldController, shieldStrategy, shieldToken, claimsManager
 
 
-  // 1) Get TestTokens =================================================
-  // if(network === 'development') {
+  // 1) Deploy test tokens - BUT set address to mainnet tokens ============
   underlyingToken = await UnderlyingToken.deployed();
   reserveToken = await ReserveToken.deployed();
+
+  if(network === "test" || network === "develop"){
+    underlyingTokenAddress = underlyingToken.address // TESTU
+    reserveTokenAddress = reserveToken.address // TESTR
+  }
+
+  if(network ==="main"){
+    underlyingTokenAddress = "0x5d3a536e4d6dbd6114cc1ead35777bab948e3643" //mainnet cDAI
+    reserveTokenAddress = "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2" // mainnet WETH
+  }
+  
+
   // }
   // ===================================================================
 
@@ -29,16 +40,16 @@ module.exports = async function (deployer, network, accounts) {
 
   // 3) Launch pToken =====================================================
   // Fee model contract = governance address
-  protektToken = await deployer.deploy(pToken, underlyingToken.address, accounts[0], claimsManager.address);
+  protektToken = await deployer.deploy(pToken, underlyingTokenAddress, accounts[0], claimsManager.address);
   // ===================================================================
 
 
 
   // 4) Launch Investment Strategy (StrategyHodl) ======================
-  shieldController = await deployer.deploy(Controller, reserveToken.address);
+  shieldController = await deployer.deploy(Controller, reserveTokenAddress);
   shieldStrategy = await deployer.deploy(ShieldStrategy, shieldController.address);
-  await shieldController.approveStrategy(reserveToken.address, shieldStrategy.address)
-  await shieldController.setStrategy(reserveToken.address, shieldStrategy.address)
+  await shieldController.approveStrategy(reserveTokenAddress, shieldStrategy.address)
+  await shieldController.setStrategy(reserveTokenAddress, shieldStrategy.address)
   // ===================================================================
 
 
@@ -47,7 +58,7 @@ module.exports = async function (deployer, network, accounts) {
   shieldToken = await deployer.deploy(
       ShieldToken,
       protektToken.address,
-      reserveToken.address,
+      reserveTokenAddress,
       shieldController.address,
       claimsManager.address
     );
@@ -57,9 +68,9 @@ module.exports = async function (deployer, network, accounts) {
 
     
   // Output ==============================================================
-  console.log('# TestTokens')
-  console.log('Underlying Token: ', underlyingToken.address)
-  console.log('Reserve Token: ', reserveToken.address)
+  console.log('# REAL TOKENS - MAINNET')
+  console.log('Underlying Token (cDAI): ', underlyingTokenAddress)
+  console.log('Reserve Token: (WETH)', reserveTokenAddress)
   console.log('-----')
   console.log('-----')
   console.log('# pToken')

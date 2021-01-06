@@ -29,15 +29,19 @@ contract HarvestRewardsCompoundDaiManual {
      * @dev Collects rewards from deposited tokens and sends to the feeModel
      */
     function harvestRewards() public {
-        // Claim COMP from comptroller
-        // ComptrollerInterface COMPtroller = ComptrollerInterface(compComptroller);
-        // COMPtroller.claimComp(address(this));
+        //Claim COMP from comptroller
+        ComptrollerInterface COMPtroller = ComptrollerInterface(compComptroller);
+        COMPtroller.claimComp(address(this));
 
         // Transfer COMP to feeModel
         uint256 amount = IERC20(comp).balanceOf(address(this));
         IERC20(comp).safeTransfer(feeModel, amount);
 
+<<<<<<< HEAD
         // emit HarvestRewards(amount);
+=======
+        emit HarvestRewards(amount);
+>>>>>>> 9e4c3074cc1536dd767eb59f540cc61e6c392a42
         emit HarvestRewards(0);
     }
 }
