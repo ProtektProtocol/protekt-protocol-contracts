@@ -16,6 +16,10 @@ module.exports = async function (deployer, network, accounts) {
   underlyingToken = await UnderlyingToken.deployed();
   reserveToken = await ReserveToken.deployed();
 
+  console.log("NETWORK IS = ")
+  console.log(network)
+  console.log("************")
+
   if(network === "test" || network === "develop"){
     underlyingTokenAddress = underlyingToken.address // TESTU
     reserveTokenAddress = reserveToken.address // TESTR
