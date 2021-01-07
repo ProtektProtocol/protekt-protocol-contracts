@@ -2,6 +2,7 @@
 
 
 // Usage : node getCDai.js
+// Assumes user has DAI in their wallet.
 
 const Web3 = require('web3');
 const web3 = new Web3('https://sandbox.truffleteams.com/e8b0f4c9-0292-45fe-bea4-cbc8b899206f');
