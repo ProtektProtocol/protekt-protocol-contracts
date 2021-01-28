@@ -1,3 +1,4 @@
+// truffle deploy --network ropsten --f 7 --skip-dry-run --reset
 const ReserveToken = artifacts.require("ReserveToken");
 const UnderlyingToken = artifacts.require("UnderlyingToken");
 const pToken = artifacts.require("pToken");
@@ -7,40 +8,30 @@ const ClaimsManager = artifacts.require("ClaimsManagerSingleAccount");
 const ShieldToken = artifacts.require("ShieldToken");
 
 module.exports = async function (deployer, network, accounts) {
-  let underlyingToken, reserveToken
   let protektToken
   let shieldController, shieldStrategy, shieldToken, claimsManager
+  let underlyingToken, reserveToken
 
-
-  // 1) Deploy test tokens - BUT set address to mainnet tokens ============
+  // Not used. cDAI and WETH are used instead.
   underlyingToken = await UnderlyingToken.deployed();
   reserveToken = await ReserveToken.deployed();
 
-  console.log("NETWORK IS = ")
-  console.log(network)
-  console.log("************")
+  // Ropsten cDAI address
+  let underlyingTokenAddress = "0x8354c3a332ffb24e3a27be252e01acfe65a33b35"
 
-  if( network === "develop"){
-    underlyingTokenAddress = underlyingToken.address // TESTU
-    reserveTokenAddress = reserveToken.address // TESTR
+  // Ropsten WETH address
+  let reserveTokenAddress = "0xb603cea165119701b58d56d10d2060fbfb3efad8"
+
+  // 1) Check correct network =================================================
+  if(network!=="ropsten"){
+      throw "********** \n !ropsten network \n ****************"
   }
-
-  if(network ==="main" || network === "test"){
-    underlyingTokenAddress = "0x5d3a536e4d6dbd6114cc1ead35777bab948e3643" //mainnet cDAI
-    reserveTokenAddress = "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2" // mainnet WETH
-  }
-  
-
-  // }
   // ===================================================================
-
 
 
   // 2) Launch ClaimsManager (ClaimsManagerSingleAccount) ==============
   claimsManager = await deployer.deploy(ClaimsManager);
   // ===================================================================
-
-
 
   // 3) Launch pToken =====================================================
   // Fee model contract = governance address
@@ -72,18 +63,18 @@ module.exports = async function (deployer, network, accounts) {
 
     
   // Output ==============================================================
-  console.log('# REAL TOKENS - MAINNET')
+  console.log('# Ropsten cDAI / WETH Tokens')
   console.log('Underlying Token (cDAI): ', underlyingTokenAddress)
-  console.log('Reserve Token: (WETH)', reserveTokenAddress)
+  console.log('Reserve Token (WETH): ', reserveTokenAddress)
   console.log('-----')
   console.log('-----')
-  console.log('# pToken')
+  console.log('# Ropsten pToken')
   console.log('Protekt Token: ', protektToken.address)
   let feeModelAddress = await protektToken.feeModel();
   console.log('Fee Model Contract: ', feeModelAddress)
   console.log('-----')
   console.log('-----')
-  console.log('# ShieldToken')
+  console.log('# Ropsten ShieldToken')
   console.log('Shield Token: ', shieldToken.address)
   console.log('Controller: ', shieldController.address)
   console.log('Strategy: ', shieldStrategy.address)
