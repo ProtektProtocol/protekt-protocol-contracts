@@ -1,5 +1,5 @@
 // truffle deploy --network kovan --f 8 --skip-dry-run --reset
-const pToken = artifacts.require("pTokenAave");
+const pTokenAave = artifacts.require("pTokenAave");
 const ReferralToken = artifacts.require("ReferralToken");
 
 module.exports = async function (deployer, network, accounts) {
@@ -18,10 +18,10 @@ module.exports = async function (deployer, network, accounts) {
 
   // 2) Launch pToken =====================================================
   // msg.sender = governance address
-  protektToken = await deployer.deploy(pToken, underlyingTokenAddress);
+  protektToken = await deployer.deploy(pTokenAave, underlyingTokenAddress);
   // ===================================================================
 
-
+  console.log(protektToken)
 
   // 3) Launch ShieldToken =============================================
   referralToken = await deployer.deploy(
