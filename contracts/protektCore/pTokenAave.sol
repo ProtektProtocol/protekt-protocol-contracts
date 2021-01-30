@@ -22,14 +22,14 @@ contract pTokenAave is
 
     address public governance;
 
-    uint256 public totalDeposits;
+    uint256 public balanceLastHarvest;
     mapping(address => uint256) public deposits;
 
     constructor(address _depositToken)
         public
         ERC20Detailed(
-            string(abi.encodePacked("Welcome ", ERC20Detailed(_depositToken).name())),
-            string(abi.encodePacked("w", ERC20Detailed(_depositToken).symbol())),
+            string(abi.encodePacked("protekt ", ERC20Detailed(_depositToken).name())),
+            string(abi.encodePacked("p", ERC20Detailed(_depositToken).symbol())),
             ERC20Detailed(_depositToken).decimals()
         )
     {
@@ -51,12 +51,13 @@ contract pTokenAave is
         referralToken = IReferralToken(_referralToken);
     }
 
-    function deposit(uint256 _amount, address referer) public {
-        harvestRewards();
+    function deposit(uint256 _amount, address depositor, address referer) public {
+        // Rewards are harvested for the current block before deposit
+        harvestRewards(depositToken, balanceLastHarvest, address(referralToken));
 
         uint256 _pool = balance();
         uint256 _before = depositToken.balanceOf(address(this));
-        depositToken.safeTransferFrom(msg.sender, address(this), _amount);
+        depositToken.safeTransferFrom(depositor, address(this), _amount);
         uint256 _after = depositToken.balanceOf(address(this));
         _amount = _after.sub(_before); // Additional check for deflationary depositTokens
         uint256 shares = 0;
@@ -65,29 +66,24 @@ contract pTokenAave is
         } else {
             shares = (_amount.mul(totalSupply())).div(_pool);
         }
+        _mint(depositor, shares);
 
-        totalDeposits = totalDeposits.add(_amount);
-        deposits[msg.sender] = deposits[msg.sender].add(_amount);
-        referralToken.depositPrincipal(_amount, referer, msg.sender);
-
-        _mint(msg.sender, shares);
+        referralToken.depositPrincipal(_amount, referer, depositor);
+        balanceLastHarvest = balance();
     }
 
     function withdraw(uint256 _shares) public {
-        require(balanceOf(msg.sender) <= _shares, "ERC20: burn amount exceeds balance");
+        require(_shares <= balanceOf(msg.sender), "ERC20: burn amount exceeds balance");
 
         // Rewards are harvested for the current block before withdrawal
-        harvestRewards();
+        harvestRewards(depositToken, balanceLastHarvest, address(referralToken));
 
         uint256 r = (balance().mul(_shares)).div(totalSupply());
-
-        totalDeposits = totalDeposits.sub(r);
-        deposits[msg.sender] = deposits[msg.sender].sub(r);
-        referralToken.withdrawPrincipal(r, msg.sender);
-
         _burn(msg.sender, _shares);
-
         depositToken.safeTransfer(msg.sender, r);
+
+        referralToken.withdrawPrincipal(r, msg.sender);
+        balanceLastHarvest = balance();
     }
 
     // Returns depositTokens per share price
@@ -95,7 +91,7 @@ contract pTokenAave is
         return balance().mul(1e18).div(totalSupply());
     }
 
-    function harvestRewards() public {
-        super.harvestRewards();
+    function harvestRewards(IERC20 _depositToken, uint256 _balanceLastHarvest, address _referralTokenAddress) public {
+        super.harvestRewards(_depositToken, _balanceLastHarvest, _referralTokenAddress);
     }
 }

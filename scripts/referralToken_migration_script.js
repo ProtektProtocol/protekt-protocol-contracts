@@ -3,8 +3,6 @@ const pTokenAave = artifacts.require("pTokenAave");
 const ReferralToken = artifacts.require("ReferralToken");
 
 module.exports = async function (deployer, network, accounts) {
-  let protektToken, referralToken, underlyingToken
-
   // Kovan cDAI address
   let underlyingTokenAddress = "0xf0d0eb522cfa50b716b3b1604c4f0fa6f04376ad"
 
@@ -18,18 +16,18 @@ module.exports = async function (deployer, network, accounts) {
 
   // 2) Launch pToken =====================================================
   // msg.sender = governance address
-  protektToken = await deployer.deploy(pTokenAave, underlyingTokenAddress);
+  let protektToken = await deployer.deploy(pTokenAave, underlyingTokenAddress);
   // ===================================================================
 
-  console.log(protektToken)
+  let protektTokenAddress = protektToken ? protektToken.address : '0x0E59208EfCc2A55334C905De90760366b1959e30';
 
   // 3) Launch ShieldToken =============================================
-  referralToken = await deployer.deploy(
+  let referralToken = await deployer.deploy(
       ReferralToken,
-      protektToken.address,
+      protektTokenAddress,
       underlyingTokenAddress
     );
-  await referralToken.setProtektToken(protektToken.address)
+  await referralToken.setProtektToken(protektTokenAddress)
   // ===================================================================
 
 
@@ -39,7 +37,7 @@ module.exports = async function (deployer, network, accounts) {
   console.log('-----')
   console.log('-----')
   console.log('Underlying Token (cDAI): ', underlyingTokenAddress)
-  console.log('Protekt Token: ', protektToken.address)
+  console.log('Protekt Token: ', protektTokenAddress)
   console.log('Referral Token: ', referralToken.address)
   console.log('-----')
   console.log('-----')

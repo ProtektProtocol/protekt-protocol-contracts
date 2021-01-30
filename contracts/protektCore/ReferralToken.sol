@@ -21,8 +21,15 @@ contract ReferralToken is ERC20, ERC20Detailed, Pausable {
 
     address public governance;
 
-    mapping(address => uint256) public refererBalances;
-    mapping(address => address) public referers;
+
+    uint256 public cummulativeBlockValue;
+    uint256 public lastBlock;
+    uint256 public lastBlockTotalValue;
+    mapping(address => uint256) public refererLastBlock;
+    mapping(address => uint256) public refererLastBlockValue;
+    mapping(address => uint256) public refererCurrentBookValue;
+
+    mapping(address => address) public getRefererForUser;
 
     constructor(address _protektToken, address _depositToken)
         public
@@ -34,16 +41,10 @@ contract ReferralToken is ERC20, ERC20Detailed, Pausable {
     {
         protektToken = IProtektToken(_protektToken);
         depositToken = IERC20(_depositToken);
+        cummulativeBlockValue = 0;
+        lastBlock = block.number;
+        lastBlockTotalValue = 0;
         governance = msg.sender;
-    }
-
-    function balance() public view returns (uint256) {
-        return depositToken.balanceOf(address(this));
-    }
-
-    function setProtektToken(address _protektToken) public {
-        require(msg.sender == governance, "!governance");
-        protektToken = IProtektToken(_protektToken);
     }
 
     function setGovernance(address _governance) public {
@@ -51,53 +52,113 @@ contract ReferralToken is ERC20, ERC20Detailed, Pausable {
         governance = _governance;
     }
 
+    function newBlocks() public view returns (uint256) {
+        uint256 currentBlock = block.number;
+        return currentBlock.sub(lastBlock);
+    }
+
+    function newBlocks(uint256 blockNum) public view returns (uint256) {
+        uint256 currentBlock = block.number;
+        return currentBlock.sub(blockNum);
+    }
+
+    function newBlocks(uint256 startBlockNum, uint256 endBlockNum) public view returns (uint256) {
+        if(endBlockNum >= startBlockNum) {
+            return endBlockNum.sub(startBlockNum);            
+        }
+        return 0;
+    }
+
+    function balance() public view returns (uint256) {
+        return depositToken.balanceOf(address(this));
+    }
+
+    function totalSupply() public view returns (uint256) {
+        return cummulativeBlockValue;
+    }
+
+    function balanceOf(address account) public view returns (uint256) {
+        return refererLastBlockValue[account].add(newBlocks(refererLastBlock[account], lastBlock).mul(refererCurrentBookValue[account]));
+    }
+
+    function underlyingBalanceOf(address account) public view returns (uint256) {
+        if(totalSupply() == 0) {
+            return 0;
+        } else {
+            return balanceOf(account).mul(balance()).div(totalSupply());            
+        }
+    }
+
     function depositPrincipal(uint256 depositAmount, address referer, address depositor) external {
         require(msg.sender == address(protektToken), "!protektToken");
-        
-        // Calculate how many shares to mint for the referer
-        uint256 mintRefererShares = depositAmount.mul(totalSupply()).div(protektToken.balance());
+        // Assumes harvestRewards() just ran
 
-        _mint(referer, mintRefererShares);
-
-        if(referers[depositor] == address(0x0)) {
-            referers[depositor] = referer;
+        if(getRefererForUser[depositor] == address(0x0)) {
+            getRefererForUser[depositor] = referer;
         } else {
-            referer = referers[depositor];
+            referer = getRefererForUser[depositor];
         }
-        refererBalances[referer] = refererBalances[referer].add(depositAmount);
+        
+        // Update saved stats
+        updateStats(referer);
+
+        // Adjust refererCurrentBookValue
+        refererCurrentBookValue[referer] = refererCurrentBookValue[referer].add(depositAmount);
     }
 
     function withdrawPrincipal(uint256 withdrawAmount, address withdrawer) external {
         require(msg.sender == address(protektToken), "!protektToken");
-        address referer = referers[withdrawer];
+        address referer = getRefererForUser[withdrawer];
 
-        // Removes referer shares proportional to the totalSupply()
-        uint256 burnRefererShares = withdrawAmount.mul(totalSupply()).div(protektToken.balance());
+        // Update saved stats
+        updateStats(referer);
 
-        _burn(referer, burnRefererShares);
-
-        refererBalances[referer] = refererBalances[referer].sub(withdrawAmount);
+        // Adjust refererCurrentBookValue
+        refererCurrentBookValue[referer] = refererCurrentBookValue[referer].sub(withdrawAmount);
     }
 
-    // No rebalance implementation for lower fees and faster swaps
-    // function withdraw(uint256 _shares) public whenNotPaused {
-    //     uint256 r = (balance().mul(_shares)).div(totalSupply());
-    //     _burn(msg.sender, _shares);
+    function updateStats(address referer) internal {
+        // 1) Calculate the block value since last deposit/withdraw
+        uint256 _newBlocks = newBlocks();
+        uint256 newBlockValue = lastBlockTotalValue.mul(_newBlocks);
+        cummulativeBlockValue = cummulativeBlockValue.add(newBlockValue);
+        lastBlockTotalValue = protektToken.balance();
+        lastBlock = block.number;
 
-    //     // Check balance
-    //     uint256 b = depositToken.balanceOf(address(this));
-    //     if (b < r) {
-    //         uint256 _withdraw = r.sub(b);
-    //         IController(controller).withdraw(address(depositToken), _withdraw);
-    //         uint256 _after = depositToken.balanceOf(address(this));
-    //         uint256 _diff = _after.sub(b);
-    //         if (_diff < _withdraw) {
-    //             r = b.add(_diff);
-    //         }
-    //     }
+        // 2) Benchmark referer
+        uint256 recentRefererBlockValue = refererCurrentBookValue[referer].mul(newBlocks(refererLastBlock[referer]));
+        refererLastBlockValue[referer] = refererLastBlockValue[referer].add(recentRefererBlockValue);
+        refererLastBlock[referer] = block.number;
+    }
 
-    //     depositToken.safeTransfer(msg.sender, r);
-    // }
+    function getRefererLastBlock(address referer) public view returns (uint256) {
+        return refererLastBlock[referer];
+    }
+
+    function returnRefererForUser(address user) public view returns (address) {
+        return getRefererForUser[user];
+    }
+
+    function withdraw(uint256 _shares) public whenNotPaused {
+        require(msg.sender == address(governance), "!governance");
+
+        // uint256 r = (balance().mul(_shares)).div(totalSupply());
+        // _burn(msg.sender, _shares);
+
+        // Check balance
+        // uint256 b = depositToken.balanceOf(address(this));
+        // if (b < r) {
+        //     uint256 _withdraw = r.sub(b);
+        //     IController(controller).withdraw(address(depositToken), _withdraw);
+        //     uint256 _after = depositToken.balanceOf(address(this));
+        //     uint256 _diff = _after.sub(b);
+        //     if (_diff < _withdraw) {
+        //         r = b.add(_diff);
+        //     }
+        // }
+
+        // depositToken.safeTransfer(msg.sender, r);
+    }
 
     function getPricePerFullShare() public view returns (uint256) {
         return balance().mul(1e18).div(totalSupply());
