@@ -12,7 +12,8 @@ import "../claimsManagers/interfaces/IClaimsManagerCore.sol";
 contract pToken is
     ERC20,
     ERC20Detailed,
-    HarvestRewardsCompoundDaiManual {
+    HarvestRewardsCompoundDaiManual
+{
     using SafeERC20 for IERC20;
     using Address for address;
     using SafeMath for uint256;
@@ -22,6 +23,8 @@ contract pToken is
     address public feeModel;
     address public governance;
     IClaimsManagerCore public claimsManager;
+    bool public isCapped;
+    uint256 public maxDeposit;
 
     constructor(address _depositToken, address _feeModel, address _claimsManager)
         public
@@ -35,6 +38,7 @@ contract pToken is
         feeModel = _feeModel;
         claimsManager = IClaimsManagerCore(_claimsManager);
         governance = msg.sender;
+        isCapped = false;
     }
 
     function balance() public view returns (uint256) {
@@ -59,6 +63,9 @@ contract pToken is
         require(claimsManager.isReady(),'!Ready');
         uint256 _pool = balance();
         uint256 _before = depositToken.balanceOf(address(this));
+        if(isCapped){
+            require((_before + _amount) <= maxDeposit,"Cap exceeded");
+        }
         depositToken.safeTransferFrom(msg.sender, address(this), _amount);
         uint256 _after = depositToken.balanceOf(address(this));
         _amount = _after.sub(_before); // Additional check for deflationary depositTokens
@@ -93,4 +100,21 @@ contract pToken is
     function getPricePerFullShare() public view returns (uint256) {
         return balance().mul(1e18).div(totalSupply());
     }
+
+
+    // cap contract at a set amount
+    function capDeposits(uint _amount) external {
+        require(msg.sender == governance, "!governance");
+        // uint256 _currentBalance = depositToken.balanceOf(address(this));
+        // require(_amount < _currentBalance, "Cap exceeds current balance");
+        isCapped = true;
+        maxDeposit = _amount;
+    }
+
+    // uncap contract
+    function uncapDeposits() external {
+        require(msg.sender == governance, "!governance");
+        isCapped = false;
+    }
+
 }
