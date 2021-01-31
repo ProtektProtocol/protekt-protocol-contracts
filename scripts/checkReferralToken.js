@@ -5,13 +5,14 @@ const {
   } = require('./utils');
 
 module.exports = async function (config) {
-  const TToken = artifacts.require("TToken");
+  const UnderlyingToken = artifacts.require("UnderlyingToken");
 	const pTokenAave = artifacts.require("pTokenAave");
 	const ReferralToken = artifacts.require("ReferralToken");
 
-  const underlyingTokenAddress = '0xf0d0eb522cfa50b716b3b1604c4f0fa6f04376ad';
-  const pTokenAddress = '0x0E59208EfCc2A55334C905De90760366b1959e30';
-  const referralTokenAddress = '0x60AE7f55B463aa859CeDbD177567Ea4a25570c12';
+  const coreTokenAddress = "0xe22da380ee6b445bb8273c81944adeb6e8450422"
+  const underlyingTokenAddress = '0x4958598AaE5CA046789b8e388F5658149df744E3';
+  const pTokenAddress = '0xB7CC9B724A7c025201a93B6acA07AE9748B78411';
+  const referralTokenAddress = '0xff73c2b7503FD7E8F0969c7a7457e3A5269a2e67';
 
   // 1) Check correct network =================================================
   // if(config.network!=="kovan"){
@@ -24,21 +25,23 @@ module.exports = async function (config) {
   let newUser = accounts[1];
   let referer = accounts[2];
 
-  let underlyingToken = await TToken.at(underlyingTokenAddress)
-  let pToken = await pTokenAave.at(pTokenAddress)
-  let referralToken = await ReferralToken.at(referralTokenAddress)
+  let underlyingToken = await UnderlyingToken.new();
+  let pToken = await pTokenAave.new(underlyingToken.address);
+  let referralToken = await ReferralToken.new(pToken.address, underlyingToken.address)
+  // let pToken = await pTokenAave.at(pTokenAddress)
+  // let referralToken = await ReferralToken.at(referralTokenAddress)
 
   // ===================================================================
   try {
-    let amount = new BN('100000000');
+    let amount = new BN('1000000');
     await underlyingToken.approve(
       pToken.address,
       amount,
-      { from: newUser }
+      { from: governance }
     );
-    console.log('herehere')
-    let response = await pToken.deposit(amount, newUser, referer, {from: newUser});
-    console.log(response);
+    let response = await pToken.deposit(amount, newUser, referer, {from: governance});
+    // let response = await pToken.depositCoreTokens(amount, newUser, referer, {from: governance});
+    // console.log(response);
 
 
 

@@ -51,6 +51,13 @@ contract pTokenAave is
         referralToken = IReferralToken(_referralToken);
     }
 
+    function depositCoreTokens(uint256 _amount, address depositor, address referer) public {
+        // Deposit coreTokens into Aave and then deposit underlyingTokens into pToken
+        uint256 underlyingTokens = super.depositCoreTokens(_amount, depositor);
+
+        deposit(underlyingTokens, depositor, referer);
+    }
+
     function deposit(uint256 _amount, address depositor, address referer) public {
         // Rewards are harvested for the current block before deposit
         harvestRewards(depositToken, balanceLastHarvest, address(referralToken));
