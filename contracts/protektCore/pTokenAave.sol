@@ -52,27 +52,37 @@ contract pTokenAave is
     }
 
     function depositCoreTokens(uint256 _amount, address depositor, address referer) public {
-        // Deposit coreTokens into Aave and then deposit underlyingTokens into pToken
-        uint256 underlyingTokens = super.depositCoreTokens(_amount, depositor);
+        // Rewards are harvested for the current block before deposit
+        harvestRewards(depositToken, balanceLastHarvest, address(referralToken));
 
-        deposit(underlyingTokens, depositor, referer);
+        uint256 _before = depositToken.balanceOf(address(this));
+        // Deposit coreTokens into Aave and then deposit underlyingTokens into pToken
+        super.depositCoreTokens(_amount, depositor);
+
+        _deposit(_amount, depositor, referer, _before);
     }
 
     function deposit(uint256 _amount, address depositor, address referer) public {
         // Rewards are harvested for the current block before deposit
         harvestRewards(depositToken, balanceLastHarvest, address(referralToken));
 
-        uint256 _pool = balance();
         uint256 _before = depositToken.balanceOf(address(this));
         depositToken.safeTransferFrom(depositor, address(this), _amount);
+
+        _deposit(_amount, depositor, referer, _before); 
+    }
+
+    function _deposit(uint256 _amount, address depositor, address referer, uint256 _before) internal {        
         uint256 _after = depositToken.balanceOf(address(this));
         _amount = _after.sub(_before); // Additional check for deflationary depositTokens
         uint256 shares = 0;
+
         if (totalSupply() == 0) {
             shares = _amount;
         } else {
-            shares = (_amount.mul(totalSupply())).div(_pool);
+            shares = (_amount.mul(totalSupply())).div(_before);
         }
+
         _mint(depositor, shares);
 
         referralToken.depositPrincipal(_amount, referer, depositor);

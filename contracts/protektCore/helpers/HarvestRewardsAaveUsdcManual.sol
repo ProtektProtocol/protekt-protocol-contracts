@@ -42,8 +42,14 @@ contract HarvestRewardsAaveUsdcManual {
      * @dev Deposits coreTokens into Aave and returns underlyingTokens
      */
     function depositCoreTokens(uint256 _amount, address depositor) public returns (uint256) {
+      // Bring in the amount from the depositor
+      IERC20(usdcTokenAddress).safeTransferFrom(depositor, address(this), _amount);
+
+      // Give approval to LendingPool to deposit the tokens
+      IERC20(usdcTokenAddress).safeApprove(lendingPoolAddress, _amount);
+
       // LendingPool.deposit(address asset, uint256 amount, address onBehalfOf, uint16 referralCode)
-      ILendingPool(lendingPoolAddress).deposit(usdcTokenAddress, _amount, depositor, 0);
+      ILendingPool(lendingPoolAddress).deposit(usdcTokenAddress, _amount, address(this), 0);
 
       return _amount;
     }
