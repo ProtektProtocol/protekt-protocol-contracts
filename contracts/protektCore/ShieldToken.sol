@@ -28,6 +28,9 @@ contract ShieldToken is ERC20, ERC20Detailed, Pausable {
     address public controller;
     IClaimsManagerCore public claimsManager;
 
+    bool public isCapped;
+    uint256 public maxDeposit;
+
     constructor(address _protektToken, address _depositToken, address _controller, address _claimsManager)
         public
         ERC20Detailed(
@@ -41,6 +44,7 @@ contract ShieldToken is ERC20, ERC20Detailed, Pausable {
         controller = _controller;
         claimsManager = IClaimsManagerCore(_claimsManager);
         governance = msg.sender;
+        isCapped = false;
     }
 
     function balance() public view returns (uint256) {
@@ -74,6 +78,9 @@ contract ShieldToken is ERC20, ERC20Detailed, Pausable {
     function deposit(uint256 _amount) public {
         uint256 _pool = balance();
         uint256 _before = depositToken.balanceOf(address(this));
+        if(isCapped){
+            require((_before + _amount) <= maxDeposit,"Cap exceeded");
+        }
         depositToken.safeTransferFrom(msg.sender, address(this), _amount);
         uint256 _after = depositToken.balanceOf(address(this));
         _amount = _after.sub(_before); // Additional check for deflationary depositTokens
@@ -131,6 +138,21 @@ contract ShieldToken is ERC20, ERC20Detailed, Pausable {
     function unpause() external {
         require(msg.sender == governance, "!governance");
         _unpause();
+    }
+
+    // cap contract at a set amount
+    function capDeposits(uint _amount) external {
+        require(msg.sender == governance, "!governance");
+        // uint256 _currentBalance = depositToken.balanceOf(address(this));
+        // require(_amount < _currentBalance, "Cap exceeds current balance");
+        isCapped = true;
+        maxDeposit = _amount;
+    }
+
+    // uncap contract
+    function uncapDeposits() external {
+        require(msg.sender == governance, "!governance");
+        isCapped = false;
     }
 
     // Custom logic in here for how much the vault allows to be borrowed

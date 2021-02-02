@@ -21,7 +21,7 @@ contract("shieldToken", accounts => {
   const claimsManager = accounts[4]
   const notClaimsManager = accounts[5]
 
-  let targetshieldToken, reserveToken, initialSupply, amount, finalAmount
+  let targetshieldToken, reserveToken, amount, finalAmount
   
   beforeEach(async function () {
     targetshieldToken = await shieldToken.deployed();
@@ -67,7 +67,6 @@ contract("shieldToken", accounts => {
       )
       expect(await targetshieldToken.paused()).to.equal(false);
     });
-
 
     /*
         Setting governance address
@@ -137,6 +136,47 @@ contract("shieldToken", accounts => {
       )
       expect(await targetshieldToken.protektToken()).equal(accountAlice); 
     });
+
+    /*
+        Capping deposits
+    */
+
+    it("should allow the Governance address to cap the contracts", async () => {
+      let amount = new BN('30000000000000000000')
+      await targetshieldToken.capDeposits(
+        amount, { from: governance }
+      )
+      expect(await targetshieldToken.isCapped()).to.equal(true);
+    });
+
+    it("should not allow a non-governance address to cap the contracts", async () => {
+      let amount = new BN('30000000000000000000')
+      await expectRevert(targetshieldToken.capDeposits(
+        amount, { from: notGovernance }), '!governance',
+      );
+    });
+
+    
+    it("should allow the Governance address to un-cap the contracts", async () => {
+      let amount = new BN('30000000000000000000')
+      await targetshieldToken.capDeposits(
+        amount, { from: governance }
+      );
+      await targetshieldToken.uncapDeposits(
+        { from: governance }
+      );
+      expect(await targetshieldToken.isCapped()).to.equal(false);
+    });
+
+    it("should not allow a non-governance address to uncap the contracts", async () => {
+      let amount = new BN('30000000000000000000')
+      await targetshieldToken.capDeposits(
+        amount, { from: governance }
+      );
+      await expectRevert(targetshieldToken.uncapDeposits(
+        { from: notGovernance }), '!governance',
+      );
+    });
   })
 
   describe('Claims Manager features', function () {
@@ -203,7 +243,7 @@ contract("shieldToken", accounts => {
   describe('when there are deposits', function () {
     beforeEach(async function () {
       reserveToken = await ReserveToken.new( {from: governance} )
-      initialSupply = new BN('100000000000000000000000')
+      // initialSupply = new BN('100000000000000000000000')
 
       targetshieldToken = await shieldToken.new(pToken.address, reserveToken.address, controller.address ,claimsManager)
       amount = new BN('20000000000000000000')
@@ -275,6 +315,41 @@ contract("shieldToken", accounts => {
           amount, { from: governance }
         )
       );
+    });
+
+    it("should allow deposits when contract is capped if deposit does not exceed cap", async () => {
+      let capAmount = new BN('30000000000000000000')
+      let amount = new BN('10000000000000000000')
+
+      await targetshieldToken.capDeposits(
+        capAmount, { from: governance }
+      );
+
+      await reserveToken.approve(
+        targetshieldToken.address,
+        amount,
+        { from: governance }
+      );
+      await targetshieldToken.deposit(amount, { from: governance})
+
+      expect(await targetshieldToken.balance()).to.be.bignumber.equal(capAmount);
+    });
+
+    it("should not allow deposits when contract is capped if deposit exceeds cap", async () => {
+      let capAmount = new BN('30000000000000000000')
+      let amount = new BN('10000000000000000001')
+
+      await targetshieldToken.capDeposits(
+        capAmount, { from: governance }
+      );
+
+      await reserveToken.approve(
+        targetshieldToken.address,
+        amount,
+        { from: governance }
+      );
+
+      await expectRevert(targetshieldToken.deposit(amount, { from: governance}),'Cap exceeded');
     });
 
 
