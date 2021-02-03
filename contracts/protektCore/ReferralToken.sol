@@ -34,8 +34,8 @@ contract ReferralToken is ERC20, ERC20Detailed, Pausable {
     constructor(address _protektToken, address _depositToken)
         public
         ERC20Detailed(
-            string(abi.encodePacked("referralInt ", ERC20Detailed(_depositToken).name())),
-            string(abi.encodePacked("ri", ERC20Detailed(_depositToken).symbol())),
+            string(abi.encodePacked("CHOO ", ERC20Detailed(_depositToken).name())),
+            string(abi.encodePacked("CHOO", ERC20Detailed(_depositToken).symbol())),
             ERC20Detailed(_depositToken).decimals()
         )
     {

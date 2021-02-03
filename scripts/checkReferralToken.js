@@ -58,8 +58,8 @@ module.exports = async function (config) {
     const underlyingTokenAddress = '0xe12AFeC5aa12Cf614678f9bFeeB98cA9Bb95b5B0';
     underlyingToken = await UnderlyingToken.at(underlyingTokenAddress);
 
-    const pTokenAddress = '0x932FF34c02024a004840528C44635D27E0Beca8E';
-    const referralTokenAddress = '0x16f0826C1AbD4Da205c2A9C5336C27cAbF2b34fb';
+    const pTokenAddress = '0x9D0a04c0CF0d5EBC5f409D130039978eD2DC5BA5';
+    const referralTokenAddress = '0xbF8fcc9aE53f396A62E4795B0ACbe6dB1807E105';
     pToken = await pTokenAave.at(pTokenAddress);
     referralToken = await ReferralToken.at(referralTokenAddress);    
   } catch(e) {
@@ -70,7 +70,7 @@ module.exports = async function (config) {
   // ===================================================================
   // ===================================================================
   try {
-    // amount = new BN('100000')
+    // amount = new BN('1000000')
     // let res = await underlyingToken.approve(
     //   pToken.address,
     //   amount,
@@ -80,16 +80,16 @@ module.exports = async function (config) {
     // console.log(response);
 
     // Kovan CoreToken
-    amount = new BN('1000000')
+    amount = new BN('30000000')
     let res = await coreToken.methods.approve(
       pToken.address,
       amount.toString()
     ).send({ from: governance });
-    console.log(res)
-    let response = await pToken.depositCoreTokens(amount, governance, referer);
+    // let response = await pToken.deposit(amount, governance, newUser, {from: newUser});
+    let response = await pTokenAave.defaults({from: governance})
     console.log(response);
-
-
+    let response1 = await pToken.depositCoreTokens(amount, newUser, referer);
+    console.log(response1);
 
 
 

@@ -57,7 +57,7 @@ contract pTokenAave is
 
         uint256 _before = depositToken.balanceOf(address(this));
         // Deposit coreTokens into Aave and then deposit underlyingTokens into pToken
-        super.depositCoreTokens(_amount, depositor);
+        super.depositCoreTokens(_amount, msg.sender);
 
         _deposit(_amount, depositor, referer, _before);
     }
@@ -67,7 +67,7 @@ contract pTokenAave is
         harvestRewards(depositToken, balanceLastHarvest, address(referralToken));
 
         uint256 _before = depositToken.balanceOf(address(this));
-        depositToken.safeTransferFrom(depositor, address(this), _amount);
+        depositToken.safeTransferFrom(msg.sender, address(this), _amount);
 
         _deposit(_amount, depositor, referer, _before); 
     }
