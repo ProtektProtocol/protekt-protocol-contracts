@@ -5,10 +5,10 @@ const ReferralToken = artifacts.require("ReferralToken");
 
 module.exports = async function (deployer, network, accounts) {
   // Kovan cDAI address
-  let coreTokenAddress = "0xe22da380ee6b445bb8273c81944adeb6e8450422"
-  let underlyingTokenAddress = "0xe12afec5aa12cf614678f9bfeeb98ca9bb95b5b0"
-  // let testToken = await TToken.new("aUSDC", "aUSDC", 6, {from: accounts[0]});
-  // underlyingTokenAddress = testToken.address;
+  let coreTokenAddress = "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+  let underlyingTokenAddress = "0xbcca60bb61934080951369a648fb03df4f96263c"
+  let testToken = await TToken.new("aUSDC", "aUSDC", 6, {from: accounts[0]});
+  underlyingTokenAddress = testToken.address;
 
   // 1) Check correct network =================================================
   // if(network!=="kovan"){
@@ -42,7 +42,7 @@ module.exports = async function (deployer, network, accounts) {
   // ===================================================================
 
 
-	    
+      
   // Output ==============================================================
   console.log('# Kovan aUSDC pToken / Referral Tokens')
   console.log('-----')

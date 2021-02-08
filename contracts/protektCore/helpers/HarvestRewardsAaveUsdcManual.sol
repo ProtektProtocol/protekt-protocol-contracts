@@ -14,12 +14,12 @@ contract HarvestRewardsAaveUsdcManual {
     using SafeMath for uint256;
 
     // Kovan
-    address public constant lendingPoolAddress = address(0xE0fBa4Fc209b4948668006B2bE61711b7f465bAe);
-    address public constant usdcTokenAddress = address(0xe22da380ee6B445bb8273C81944ADEB6E8450422);
+    // address public constant lendingPoolAddress = address(0xE0fBa4Fc209b4948668006B2bE61711b7f465bAe);
+    // address public constant usdcTokenAddress = address(0xe22da380ee6B445bb8273C81944ADEB6E8450422);
 
     // Mainnet
-    // address public constant lendingPoolAddress = address(0x7d2768dE32b0b80b7a3454c06BdAc94A69DDc7A9);
-    // address public constant usdcTokenAddress = address(0xe22da380ee6b445bb8273c81944adeb6e8450422);
+    address public constant lendingPoolAddress = address(0x7d2768dE32b0b80b7a3454c06BdAc94A69DDc7A9);
+    address public constant usdcTokenAddress = address(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48);
 
     event HarvestRewards(uint256 amount);
 

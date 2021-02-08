@@ -82,7 +82,7 @@ module.exports = {
       networkCheckTimeout: 10000000,
       skipDryRun: true
     },
-    main: {
+    mainnet: {
       provider: walletProvider("secrets_mainnet.json"),
       network_id: 1
     }

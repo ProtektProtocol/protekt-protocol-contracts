@@ -58,8 +58,8 @@ module.exports = async function (config) {
     const underlyingTokenAddress = '0xe12AFeC5aa12Cf614678f9bFeeB98cA9Bb95b5B0';
     underlyingToken = await UnderlyingToken.at(underlyingTokenAddress);
 
-    const pTokenAddress = '0x9D0a04c0CF0d5EBC5f409D130039978eD2DC5BA5';
-    const referralTokenAddress = '0xbF8fcc9aE53f396A62E4795B0ACbe6dB1807E105';
+    const pTokenAddress = '0x13b1b7D2B4e2eAD262880db52e411031CdAf50E8';
+    const referralTokenAddress = '0x4F4f24406255b691B7D1f478f92b7524E7BCDC9a';
     pToken = await pTokenAave.at(pTokenAddress);
     referralToken = await ReferralToken.at(referralTokenAddress);    
   } catch(e) {
