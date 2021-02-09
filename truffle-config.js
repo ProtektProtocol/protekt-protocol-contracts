@@ -84,7 +84,8 @@ module.exports = {
     },
     mainnet: {
       provider: walletProvider("secrets_mainnet.json"),
-      network_id: 1
+      network_id: 1,
+      gasPrice: 100000000000
     }
 
 
