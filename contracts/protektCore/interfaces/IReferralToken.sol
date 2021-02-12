@@ -2,8 +2,10 @@
 
 pragma solidity ^0.5.17;
 
-interface IProtektToken {
-	function feeModel() external returns (address);
+interface IReferralToken {
+	function depositPrincipal(uint256 depositAmount, address referer, address depositor) external;
+
+	function withdrawPrincipal(uint256 withdrawAmount, address withdrawer) external;
 
     /**
      * @dev Returns the amount of tokens in existence.
