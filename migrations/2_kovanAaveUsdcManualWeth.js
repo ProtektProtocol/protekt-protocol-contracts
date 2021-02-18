@@ -1,5 +1,5 @@
-// truffle deploy --network kovan --f 2 --skip-dry-run --reset
-const pToken = artifacts.require("pToken");
+// truffle deploy --network kovan --f 2 --to 2 --skip-dry-run --reset
+const pToken = artifacts.require("pTokenAave");
 const Controller = artifacts.require("Controller");
 const ShieldStrategy = artifacts.require("StrategyHodl");
 const ClaimsManager = artifacts.require("ClaimsManagerSingleAccount");
@@ -38,8 +38,8 @@ module.exports = async function (deployer, network, accounts) {
   // 4) Launch Investment Strategy (StrategyHodl) ======================
   shieldController = await Controller.new(reserveTokenAddress);
   shieldStrategy = await ShieldStrategy.new(shieldController.address);
-  await shieldController.approveStrategy(reserveTokenAddress, shieldStrategy.address)
-  await shieldController.setStrategy(reserveTokenAddress, shieldStrategy.address)
+  await shieldController.approveStrategy(reserveTokenAddress, shieldStrategy.address);
+  await shieldController.setStrategy(reserveTokenAddress, shieldStrategy.address);
   // ===================================================================
 
 
@@ -51,7 +51,8 @@ module.exports = async function (deployer, network, accounts) {
       shieldController.address,
       claimsManager.address
     );
-  await claimsManager.setShieldToken(shieldToken.address)
+  await claimsManager.setShieldToken(shieldToken.address);
+  await protektToken.setShieldToken(shieldToken.address);
   // ===================================================================
 
 

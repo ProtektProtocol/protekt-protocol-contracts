@@ -6,30 +6,26 @@ import "@openzeppelin/contracts/utils/Address.sol";
 import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20Detailed.sol";
-import "./helpers/HarvestRewardsAaveUsdcManual.sol";
-import "../claimsManagers/interfaces/IClaimsManagerCore.sol";
+import "./HarvestRewardsAaveUsdcManualReferral.sol";
+import "../protektCore/interfaces/IReferralToken.sol";
 
-contract pTokenAave is
+contract pTokenAaveReferral is
     ERC20,
     ERC20Detailed,
-    HarvestRewardsAaveUsdcManual
-{
+    HarvestRewardsAaveUsdcManualReferral {
     using SafeERC20 for IERC20;
     using Address for address;
     using SafeMath for uint256;
 
     IERC20 public depositToken;
-    address public shieldTokenAddress;
+    IReferralToken public referralToken;
 
-    address public feeModel;
     address public governance;
-    IClaimsManagerCore public claimsManager;
-    bool public isCapped;
-    uint256 public maxDeposit;
 
     uint256 public balanceLastHarvest;
+    mapping(address => uint256) public deposits;
 
-    constructor(address _depositToken, address _feeModel, address _claimsManager)
+    constructor(address _depositToken)
         public
         ERC20Detailed(
             string(abi.encodePacked("protekt ", ERC20Detailed(_depositToken).name())),
@@ -38,10 +34,7 @@ contract pTokenAave is
         )
     {
         depositToken = IERC20(_depositToken);
-        feeModel = _feeModel;
-        claimsManager = IClaimsManagerCore(_claimsManager);
         governance = msg.sender;
-        isCapped = false;
     }
 
     function balance() public view returns (uint256) {
@@ -53,70 +46,60 @@ contract pTokenAave is
         governance = _governance;
     }
 
-    function setShieldToken(address _shieldTokenAddress) public {
+    function setReferralToken(address _referralToken) public {
         require(msg.sender == governance, "!governance");
-        shieldTokenAddress = _shieldTokenAddress;
+        referralToken = IReferralToken(_referralToken);
     }
 
-    function depositCoreTokens(uint256 _amount) public {
+    function depositCoreTokens(uint256 _amount, address depositor, address referer) public {
         // Rewards are harvested for the current block before deposit
-        // harvestRewards(depositToken, balanceLastHarvest, address(shieldToken));
-        harvestRewards();
+        harvestRewards(depositToken, balanceLastHarvest, address(referralToken));
 
+        uint256 _before = depositToken.balanceOf(address(this));
         // Deposit coreTokens into Aave and then deposit underlyingTokens into pToken
         super.depositCoreTokens(_amount, msg.sender);
 
-        _deposit(_amount);
+        _deposit(_amount, depositor, referer, _before);
     }
 
-    function depositAll() external {
-        deposit(depositToken.balanceOf(msg.sender));
-    }
-
-    function deposit(uint256 _amount) public {
+    function deposit(uint256 _amount, address depositor, address referer) public {
         // Rewards are harvested for the current block before deposit
-        // harvestRewards(depositToken, balanceLastHarvest, address(shieldToken));
-        harvestRewards();
+        harvestRewards(depositToken, balanceLastHarvest, address(referralToken));
 
-        _deposit(_amount);
+        uint256 _before = depositToken.balanceOf(address(this));
+        depositToken.safeTransferFrom(msg.sender, address(this), _amount);
+
+        _deposit(_amount, depositor, referer, _before); 
     }
 
-    function _deposit(uint256 _amount) internal {
-        require(claimsManager.isReady(),'!Ready');
-        uint256 _pool = balance();
-        uint256 _before = depositToken.balanceOf(address(this));
-        if(isCapped){
-            require((_before + _amount) <= maxDeposit,"Cap exceeded");
-        }
-        depositToken.safeTransferFrom(msg.sender, address(this), _amount);
+    function _deposit(uint256 _amount, address depositor, address referer, uint256 _before) internal {        
         uint256 _after = depositToken.balanceOf(address(this));
         _amount = _after.sub(_before); // Additional check for deflationary depositTokens
         uint256 shares = 0;
+
         if (totalSupply() == 0) {
             shares = _amount;
         } else {
-            shares = (_amount.mul(totalSupply())).div(_pool);
+            shares = (_amount.mul(totalSupply())).div(_before);
         }
-        _mint(msg.sender, shares);
+
+        _mint(depositor, shares);
+
+        referralToken.depositPrincipal(_amount, referer, depositor);
         balanceLastHarvest = balance();
     }
 
-    function withdrawAll() external {
-        withdraw(balanceOf(msg.sender));
-    }
-
-    function harvestRewards() public {
-        super.harvestRewards();
-    }
-
     function withdraw(uint256 _shares) public {
+        require(_shares <= balanceOf(msg.sender), "ERC20: burn amount exceeds balance");
+
         // Rewards are harvested for the current block before withdrawal
-        harvestRewards();
+        harvestRewards(depositToken, balanceLastHarvest, address(referralToken));
 
         uint256 r = (balance().mul(_shares)).div(totalSupply());
         _burn(msg.sender, _shares);
-
         depositToken.safeTransfer(msg.sender, r);
+
+        referralToken.withdrawPrincipal(r, msg.sender);
         balanceLastHarvest = balance();
     }
 
@@ -125,20 +108,7 @@ contract pTokenAave is
         return balance().mul(1e18).div(totalSupply());
     }
 
-
-    // cap contract at a set amount
-    function capDeposits(uint _amount) external {
-        require(msg.sender == governance, "!governance");
-        // uint256 _currentBalance = depositToken.balanceOf(address(this));
-        // require(_amount < _currentBalance, "Cap exceeds current balance");
-        isCapped = true;
-        maxDeposit = _amount;
+    function harvestRewards(IERC20 _depositToken, uint256 _balanceLastHarvest, address _referralTokenAddress) public {
+        super.harvestRewards(_depositToken, _balanceLastHarvest, _referralTokenAddress);
     }
-
-    // uncap contract
-    function uncapDeposits() external {
-        require(msg.sender == governance, "!governance");
-        isCapped = false;
-    }
-
 }
