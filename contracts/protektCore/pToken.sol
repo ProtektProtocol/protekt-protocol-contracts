@@ -78,6 +78,39 @@ contract pToken is
         _mint(msg.sender, shares);
     }
 
+
+    function _deposit(uint256 _after, uint256 _before, address depositor) internal {
+        uint256 _pool = balance();
+        uint256 _amount = _after.sub(_before);
+        uint256 shares = 0;
+        if (totalSupply() == 0) {
+            shares = _amount;
+        } else {
+            shares = (_amount.mul(totalSupply())).div(_pool);
+        }
+        _mint(depositor, shares);
+    }
+
+    function depositCoreTokens(uint256 _amount) public {
+        require(claimsManager.isReady(),'!Ready');
+        
+        // Rewards are harvested for the current block before deposit
+        
+        // harvestRewards(); - this will break deposits on testnets
+
+        uint256 _before = depositToken.balanceOf(address(this));
+
+        // Deposit coreTokens into Compound and then deposit underlyingTokens into pToken
+        uint256 _after = super.depositCoreTokens(_amount, msg.sender);
+
+        if(isCapped){
+            require(_after <= maxDeposit, "Cap exceeded");
+        }
+
+        // now have the cDai amount they are going to deposit already in the contract 
+        _deposit(_after, _before, msg.sender);
+    }
+
     function withdrawAll() external {
         withdraw(balanceOf(msg.sender));
     }

@@ -1,4 +1,4 @@
-// truffle deploy --network kovan --f 2 --to 2 --skip-dry-run --reset
+// truffle deploy --network kovan --f 4 --to 4 --skip-dry-run --reset
 const pToken = artifacts.require("pTokenAave");
 const Controller = artifacts.require("Controller");
 const ShieldStrategy = artifacts.require("StrategyHodl");
