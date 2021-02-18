@@ -25,8 +25,8 @@ contract HarvestRewardsCompoundDaiManual {
     // Kovan
     address public constant compComptroller = address(0x5eAe89DC1C671724A672ff0630122ee834098657);
     address public constant comp = address(0x61460874a7196d6a22D1eE4922473664b3E95270);
-    address public constant cDaiTokenAddress = address(0x5d3a536E4D6DbD6114cc1Ead35777bAB948E3643); 
-    address public constant daiTokenAddress = address(0xC4375B7De8af5a38a93548eb8453a498222C4fF2);
+    address public constant cDaiTokenAddress = address(0xF0d0EB522cfa50B716B3b1604C4F0fA6f04376AD); 
+    address public constant daiTokenAddress = address(0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa);
 
     event HarvestRewards(uint256 amount);
 

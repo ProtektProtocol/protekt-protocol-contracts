@@ -1,4 +1,3 @@
-// truffle deploy --network kovan --f 5 --skip-dry-run --reset
 const ReserveToken = artifacts.require("ReserveToken");
 const UnderlyingToken = artifacts.require("UnderlyingToken");
 const pToken = artifacts.require("pToken");
@@ -8,30 +7,40 @@ const ClaimsManager = artifacts.require("ClaimsManagerSingleAccount");
 const ShieldToken = artifacts.require("ShieldToken");
 
 module.exports = async function (deployer, network, accounts) {
+  let underlyingToken, reserveToken
   let protektToken
   let shieldController, shieldStrategy, shieldToken, claimsManager
-  let underlyingToken, reserveToken
 
-  // Not used. cDAI and WETH are used instead.
+
+  // 1) Deploy test tokens - BUT set address to network tokens ============
   underlyingToken = await UnderlyingToken.deployed();
   reserveToken = await ReserveToken.deployed();
 
-  // Kovan cDAI address
-  let underlyingTokenAddress = "0xf0d0eb522cfa50b716b3b1604c4f0fa6f04376ad"
+  console.log("NETWORK IS = ")
+  console.log(network)
+  console.log("************")
 
-  // Kovan WETH address
-  let reserveTokenAddress = "0xd0A1E359811322d97991E03f863a0C30C2cF029C"
-
-  // 1) Check correct network =================================================
-  if(network!=="kovan"){
-      throw "********** \n !kovan network \n ****************"
+  if( network === "develop"){
+    underlyingTokenAddress = underlyingToken.address // TESTU
+    reserveTokenAddress = reserveToken.address // TESTR
   }
+
+  if(network ==="main" || network === "test"){
+    underlyingTokenAddress = "0x5d3a536e4d6dbd6114cc1ead35777bab948e3643" //mainnet cDAI
+    reserveTokenAddress = "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2" // mainnet WETH
+  }
+  
+
+  // }
   // ===================================================================
+
 
 
   // 2) Launch ClaimsManager (ClaimsManagerSingleAccount) ==============
   claimsManager = await deployer.deploy(ClaimsManager);
   // ===================================================================
+
+
 
   // 3) Launch pToken =====================================================
   // Fee model contract = governance address
@@ -63,18 +72,18 @@ module.exports = async function (deployer, network, accounts) {
 
     
   // Output ==============================================================
-  console.log('# Kovan cDAI / WETH Tokens')
+  console.log(`# TOKEN ADDRESSES FOR ${network}`)
   console.log('Underlying Token (cDAI): ', underlyingTokenAddress)
-  console.log('Reserve Token (WETH): ', reserveTokenAddress)
+  console.log('Reserve Token: (WETH)', reserveTokenAddress)
   console.log('-----')
   console.log('-----')
-  console.log('# Kovan pToken')
+  console.log('# pToken')
   console.log('Protekt Token: ', protektToken.address)
   let feeModelAddress = await protektToken.feeModel();
   console.log('Fee Model Contract: ', feeModelAddress)
   console.log('-----')
   console.log('-----')
-  console.log('# Kovan ShieldToken')
+  console.log('# ShieldToken')
   console.log('Shield Token: ', shieldToken.address)
   console.log('Controller: ', shieldController.address)
   console.log('Strategy: ', shieldStrategy.address)
