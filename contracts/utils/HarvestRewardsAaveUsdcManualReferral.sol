@@ -3,13 +3,13 @@ pragma solidity ^0.5.16;
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
 import "@openzeppelin/contracts/math/SafeMath.sol";
-import "../../../interfaces/aave/ILendingPool.sol";
+import "../../interfaces/aave/ILendingPool.sol";
 
 /**
  * @dev Extension of pToken that specifies how rewards are collected for
  * the Aave-USDC and sent to shieldToken. 
  */
-contract HarvestRewardsAaveUsdcManual {
+contract HarvestRewardsAaveUsdcManualReferral {
     using SafeERC20 for IERC20;
     using SafeMath for uint256;
 
@@ -23,17 +23,13 @@ contract HarvestRewardsAaveUsdcManual {
 
     uint256 shieldFee = 20;
 
-    IERC20 public depositToken;
-    address public shieldTokenAddress;
-    uint256 public balanceLastHarvest;
-
     event HarvestRewards(uint256 amount);
 
     /**
      * @dev Collects rewards from deposited tokens and sends to the shieldToken
      */
-    function harvestRewards() public {
-      uint256 interest = depositToken.balanceOf(address(this)).sub(balanceLastHarvest);        
+    function harvestRewards(IERC20 depositToken, uint256 _balanceLastHarvest, address shieldTokenAddress) public {
+      uint256 interest = depositToken.balanceOf(address(this)).sub(_balanceLastHarvest);        
       uint256 shieldInterest = interest.mul(shieldFee).div(100);
       uint256 keepInterest = interest.sub(shieldInterest);
 

@@ -7,7 +7,7 @@ import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20Detailed.sol";
 import "@openzeppelin/contracts/ownership/Ownable.sol";
-import "./interfaces/IProtektToken.sol";
+import "../protektCore/interfaces/IProtektToken.sol";
 import "../utils/Pausable.sol";
 
 
