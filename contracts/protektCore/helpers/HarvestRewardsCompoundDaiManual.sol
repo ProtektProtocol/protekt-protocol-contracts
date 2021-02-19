@@ -14,7 +14,7 @@ contract HarvestRewardsCompoundDaiManual {
     using SafeERC20 for IERC20;
     using SafeMath for uint256;
 
-    address public feeModel;
+    // address public feeModel;
 
     // Mainnet
     // address public constant compComptroller = address(0x3d9819210A31b4961b30EF54bE2aeD79B9c9Cd3B);
@@ -33,14 +33,14 @@ contract HarvestRewardsCompoundDaiManual {
     /**
      * @dev Collects rewards from deposited tokens and sends to the feeModel
      */
-    function harvestRewards() public {
+    function harvestRewards(address _feeModel) public {
         //Claim COMP from comptroller
         ComptrollerInterface COMPtroller = ComptrollerInterface(compComptroller);
         COMPtroller.claimComp(address(this));
 
         // Transfer COMP to feeModel
         uint256 amount = IERC20(comp).balanceOf(address(this));
-        IERC20(comp).safeTransfer(feeModel, amount);
+        IERC20(comp).safeTransfer(_feeModel, amount);
 
         emit HarvestRewards(amount);
         // emit HarvestRewards(0);

@@ -96,7 +96,7 @@ contract pToken is
         
         // Rewards are harvested for the current block before deposit
         
-        // harvestRewards(); - this will break deposits on testnets
+        harvestRewards(); //- this will break deposits on testnets
 
         uint256 _before = depositToken.balanceOf(address(this));
 
@@ -116,7 +116,7 @@ contract pToken is
     }
 
     function harvestRewards() public {
-        super.harvestRewards();
+        super.harvestRewards(feeModel);
     }
 
     function withdraw(uint256 _shares) public {

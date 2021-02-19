@@ -686,6 +686,13 @@
   dependencies:
     "follow-redirects" "^1.10.0"
 
+"axios@0.19.2":
+  "integrity" "sha512-fjgm5MvRHLhx+osE2xoekY70AhARk3a6hkN+3Io1jc00jtquGvxYlKlsFUhmUET0V5te6CcZI7lcv2Ym61mjHA=="
+  "resolved" "https://registry.npmjs.org/axios/-/axios-0.19.2.tgz"
+  "version" "0.19.2"
+  dependencies:
+    "follow-redirects" "1.5.10"
+
 "backoff@^2.5.0":
   "integrity" "sha1-9hbtqdPktmuMp/ynn2lXIsX44m8="
   "resolved" "https://registry.npmjs.org/backoff/-/backoff-2.5.0.tgz"
@@ -1103,6 +1110,11 @@
     "inherits" "^2.0.1"
     "safe-buffer" "^5.0.1"
 
+"circular@^1.0.5":
+  "integrity" "sha1-fad6+Yu96c5LWzWM1Va13e0tMUk="
+  "resolved" "https://registry.npmjs.org/circular/-/circular-1.0.5.tgz"
+  "version" "1.0.5"
+
 "class-is@^1.1.0":
   "integrity" "sha512-rhjH9AG1fvabIDoGRVH587413LPjTZgmDF9fOFCbFJQV4yuocX1mHxxvXI4g3cGwbVY9wAYIoKlg1N79frJKQw=="
   "resolved" "https://registry.npmjs.org/class-is/-/class-is-1.1.0.tgz"
@@ -1117,6 +1129,26 @@
     "define-property" "^0.2.5"
     "isobject" "^3.0.0"
     "static-extend" "^0.1.1"
+
+"cli-logger@0.5.40":
+  "integrity" "sha1-CX8OEbByx8aYomxH9YiinCC0iws="
+  "resolved" "https://registry.npmjs.org/cli-logger/-/cli-logger-0.5.40.tgz"
+  "version" "0.5.40"
+  dependencies:
+    "circular" "^1.0.5"
+    "cli-util" "~1.1.27"
+
+"cli-regexp@~0.1.0":
+  "integrity" "sha1-a82TsJ+y7RAl0woRVdWZeVSlNRI="
+  "resolved" "https://registry.npmjs.org/cli-regexp/-/cli-regexp-0.1.2.tgz"
+  "version" "0.1.2"
+
+"cli-util@~1.1.27":
+  "integrity" "sha1-QtaeNqBAoyH8nPhRwVE8rcUJMFQ="
+  "resolved" "https://registry.npmjs.org/cli-util/-/cli-util-1.1.27.tgz"
+  "version" "1.1.27"
+  dependencies:
+    "cli-regexp" "~0.1.0"
 
 "cliui@^4.0.0":
   "integrity" "sha512-4FG+RSG9DL7uEwRUZXZn3SS34DiDPfzP0VOiEwtUWlE+AR2EIg+hSyvrIgUUfhdgR/UkAeW2QHgeP+hWrXs7jQ=="
@@ -1356,6 +1388,13 @@
   dependencies:
     "ms" "2.1.2"
 
+"debug@=3.1.0":
+  "integrity" "sha512-OX8XqP7/1a9cqkxYw2yXss15f26NKWBpDXQd0/uK/KPqdQhxbPa994hnzjcE2VqQpDslf55723cKPUOGSmMY3g=="
+  "resolved" "https://registry.npmjs.org/debug/-/debug-3.1.0.tgz"
+  "version" "3.1.0"
+  dependencies:
+    "ms" "2.0.0"
+
 "debug@2.6.9":
   "integrity" "sha512-bC7ElrdJaJnPbAP+1EotYvqZsb3ecl5wi6Bfi6BJTUcNowp6cvspg0jXznRTKDjm/E7AdgFBVeAPVMNcKGsHMA=="
   "resolved" "https://registry.npmjs.org/debug/-/debug-2.6.9.tgz"
@@ -1487,6 +1526,11 @@
   dependencies:
     "is-descriptor" "^1.0.2"
     "isobject" "^3.0.1"
+
+"delay@4.3.0":
+  "integrity" "sha512-Lwaf3zVFDMBop1yDuFZ19F9WyGcZcGacsbdlZtWjQmM50tOcMntm1njF/Nb/Vjij3KaSvCF+sEYGKrrjObu2NA=="
+  "resolved" "https://registry.npmjs.org/delay/-/delay-4.3.0.tgz"
+  "version" "4.3.0"
 
 "delayed-stream@~1.0.0":
   "integrity" "sha1-3zrhmayt+31ECqrgsp4icrJOxhk="
@@ -1943,7 +1987,7 @@
     "ethereum-common" "^0.0.18"
     "ethereumjs-util" "^5.0.0"
 
-"ethereumjs-tx@^2.1.1":
+"ethereumjs-tx@^2.1.1", "ethereumjs-tx@^2.1.2":
   "integrity" "sha512-zZEK1onCeiORb0wyCXUvg94Ve5It/K6GD1K+26KfFKodiBiS6d9lfCXlUKGBBdQ+bv7Day+JK0tj1K+BeNFRAw=="
   "resolved" "https://registry.npmjs.org/ethereumjs-tx/-/ethereumjs-tx-2.1.2.tgz"
   "version" "2.1.2"
@@ -2391,6 +2435,13 @@
   "integrity" "sha512-SSG5xmZh1mkPGyKzjZP8zLjltIfpW32Y5QpdNJyjcfGxK3qo3NDDkZOZSFiGn1A6SclQxY9GzEwAHQ3dmYRWpg=="
   "resolved" "https://registry.npmjs.org/follow-redirects/-/follow-redirects-1.13.1.tgz"
   "version" "1.13.1"
+
+"follow-redirects@1.5.10":
+  "integrity" "sha512-0V5l4Cizzvqt5D44aTXbFZz+FtyXV1vrDN6qrelxtfYQKW0KO0W2T/hkE8xvGa/540LkZlkaUjO4ailYTFtHVQ=="
+  "resolved" "https://registry.npmjs.org/follow-redirects/-/follow-redirects-1.5.10.tgz"
+  "version" "1.5.10"
+  dependencies:
+    "debug" "=3.1.0"
 
 "for-in@^1.0.1", "for-in@^1.0.2":
   "integrity" "sha1-gQaNKVqBQuwKxybG4iAMMPttXoA="
@@ -4219,6 +4270,11 @@
     "object-assign" "^4.1.0"
     "strict-uri-encode" "^1.0.0"
 
+"querystring@0.2.0":
+  "integrity" "sha1-sgmEkgO7Jd+CDadW50cAWHhSFiA="
+  "resolved" "https://registry.npmjs.org/querystring/-/querystring-0.2.0.tgz"
+  "version" "0.2.0"
+
 "randomatic@^3.0.0":
   "integrity" "sha512-TuDE5KxZ0J461RVjrJZCJc+J+zCkTb1MbH9AQUq68sMhOMcy9jLcb3BrZKgp9q9Ncltdg4QVqWrH02W2EFFVYw=="
   "resolved" "https://registry.npmjs.org/randomatic/-/randomatic-3.1.1.tgz"
@@ -5072,6 +5128,16 @@
   dependencies:
     "assertion-error" "^1.1.0"
     "lodash.isequal" "^4.5.0"
+
+"truffle-plugin-verify@^0.5.4":
+  "integrity" "sha512-cFqhypLZ3C/71jh9muVWm37pKd+I1AHr/hu+h7Y3GEKaMFu5YoQ97mj/0AnrY4MO8pgoaghSqkCPiIj/xXCaoA=="
+  "resolved" "https://registry.npmjs.org/truffle-plugin-verify/-/truffle-plugin-verify-0.5.4.tgz"
+  "version" "0.5.4"
+  dependencies:
+    "axios" "0.19.2"
+    "cli-logger" "0.5.40"
+    "delay" "4.3.0"
+    "querystring" "0.2.0"
 
 "tunnel-agent@^0.6.0":
   "integrity" "sha1-J6XeoGs2sEoKmWZ3SykIaPD8QP0="
