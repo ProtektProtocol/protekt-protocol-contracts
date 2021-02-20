@@ -14,25 +14,21 @@ contract HarvestRewardsAaveUsdcManual {
     using SafeMath for uint256;
 
     // Kovan
-    // address public constant lendingPoolAddress = address(0xE0fBa4Fc209b4948668006B2bE61711b7f465bAe);
-    // address public constant usdcTokenAddress = address(0xe22da380ee6B445bb8273C81944ADEB6E8450422);
+    address public constant lendingPoolAddress = address(0xE0fBa4Fc209b4948668006B2bE61711b7f465bAe);
+    address public constant usdcTokenAddress = address(0xe22da380ee6B445bb8273C81944ADEB6E8450422);
 
     // Mainnet
-    address public constant lendingPoolAddress = address(0x7d2768dE32b0b80b7a3454c06BdAc94A69DDc7A9);
-    address public constant usdcTokenAddress = address(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48);
+    // address public constant lendingPoolAddress = address(0x7d2768dE32b0b80b7a3454c06BdAc94A69DDc7A9);
+    // address public constant usdcTokenAddress = address(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48);
 
     uint256 shieldFee = 20;
-
-    IERC20 public depositToken;
-    address public shieldTokenAddress;
-    uint256 public balanceLastHarvest;
 
     event HarvestRewards(uint256 amount);
 
     /**
      * @dev Collects rewards from deposited tokens and sends to the shieldToken
      */
-    function harvestRewards() public {
+    function harvestRewards(IERC20 depositToken, address shieldTokenAddress, uint256 balanceLastHarvest) public {
       uint256 interest = depositToken.balanceOf(address(this)).sub(balanceLastHarvest);        
       uint256 shieldInterest = interest.mul(shieldFee).div(100);
       uint256 keepInterest = interest.sub(shieldInterest);

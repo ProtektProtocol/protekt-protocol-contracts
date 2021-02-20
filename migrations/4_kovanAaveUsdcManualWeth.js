@@ -18,9 +18,9 @@ module.exports = async function (deployer, network, accounts) {
   let reserveTokenAddress = "0xd0A1E359811322d97991E03f863a0C30C2cF029C"
 
   // 1) Check correct network =================================================
-  if(network!=="kovan"){
-      throw "********** \n !kovan network \n ****************"
-  }
+  // if(network!=="kovan"){
+  //     throw "********** \n !kovan network \n ****************"
+  // }
   // ===================================================================
 
 

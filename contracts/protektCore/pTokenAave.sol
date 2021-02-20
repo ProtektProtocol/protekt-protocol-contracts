@@ -60,13 +60,15 @@ contract pTokenAave is
 
     function depositCoreTokens(uint256 _amount) public {
         // Rewards are harvested for the current block before deposit
-        // harvestRewards(depositToken, balanceLastHarvest, address(shieldToken));
         harvestRewards();
+
+        // Store balance before deposit
+        uint256 _before = depositToken.balanceOf(address(this));
 
         // Deposit coreTokens into Aave and then deposit underlyingTokens into pToken
         super.depositCoreTokens(_amount, msg.sender);
 
-        _deposit(_amount);
+        _handleDeposit(_amount, msg.sender, _before);
     }
 
     function depositAll() external {
@@ -75,29 +77,30 @@ contract pTokenAave is
 
     function deposit(uint256 _amount) public {
         // Rewards are harvested for the current block before deposit
-        // harvestRewards(depositToken, balanceLastHarvest, address(shieldToken));
         harvestRewards();
 
-        _deposit(_amount);
+        // Store balance before deposit
+        uint256 _before = depositToken.balanceOf(address(this));
+        depositToken.safeTransferFrom(msg.sender, address(this), _amount);
+
+        _handleDeposit(_amount, msg.sender, _before);
     }
 
-    function _deposit(uint256 _amount) internal {
+    function _handleDeposit(uint256 _amount, address depositor, uint256 _before) internal {
         require(claimsManager.isReady(),'!Ready');
-        uint256 _pool = balance();
-        uint256 _before = depositToken.balanceOf(address(this));
         if(isCapped){
-            require((_before + _amount) <= maxDeposit,"Cap exceeded");
+            require((_before + _amount) <= maxDeposit, "Cap exceeded");
         }
-        depositToken.safeTransferFrom(msg.sender, address(this), _amount);
+
         uint256 _after = depositToken.balanceOf(address(this));
-        _amount = _after.sub(_before); // Additional check for deflationary depositTokens
+        _amount = _after.sub(_before);
         uint256 shares = 0;
         if (totalSupply() == 0) {
             shares = _amount;
         } else {
-            shares = (_amount.mul(totalSupply())).div(_pool);
+            shares = (_amount.mul(totalSupply())).div(_before);
         }
-        _mint(msg.sender, shares);
+        _mint(depositor, shares);
         balanceLastHarvest = balance();
     }
 
@@ -106,7 +109,7 @@ contract pTokenAave is
     }
 
     function harvestRewards() public {
-        super.harvestRewards();
+        super.harvestRewards(depositToken, shieldTokenAddress, balanceLastHarvest);
     }
 
     function withdraw(uint256 _shares) public {
