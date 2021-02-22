@@ -103,16 +103,16 @@ contract ShieldToken is ERC20, ERC20Detailed, Pausable {
         _burn(msg.sender, _shares);
 
         // Check balance
-        uint256 b = depositToken.balanceOf(address(this));
-        if (b < r) {
-            uint256 _withdraw = r.sub(b);
-            IController(controller).withdraw(address(depositToken), _withdraw);
-            uint256 _after = depositToken.balanceOf(address(this));
-            uint256 _diff = _after.sub(b);
-            if (_diff < _withdraw) {
-                r = b.add(_diff);
-            }
-        }
+        // uint256 b = depositToken.balanceOf(address(this));
+        // if (b < r) {
+        //     uint256 _withdraw = r.sub(b);
+        //     IController(controller).withdraw(address(depositToken), _withdraw);
+        //     uint256 _after = depositToken.balanceOf(address(this));
+        //     uint256 _diff = _after.sub(b);
+        //     if (_diff < _withdraw) {
+        //         r = b.add(_diff);
+        //     }
+        // }
 
         depositToken.safeTransfer(msg.sender, r);
     }

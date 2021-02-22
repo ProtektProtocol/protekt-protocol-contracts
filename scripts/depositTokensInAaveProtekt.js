@@ -50,25 +50,26 @@ module.exports = async function (config) {
   // ===================================================================
   // ===================================================================
   try {
+    // ShieldToken
     amount = new BN('10000000000000000')
-    let res = await reserveToken.approve(
-      shieldToken.address,
-      amount,
-      { from: governance }
-    );
-    let response0 = await shieldToken.deposit(amount, {from: governance});
-    console.log(response0);
+    // let res = await reserveToken.approve(
+    //   shieldToken.address,
+    //   amount,
+    //   { from: governance }
+    // );
+    // let response0 = await shieldToken.deposit(amount, {from: governance});
+    // console.log(response0);
 
     // Kovan CoreToken
-    let response = await pTokenAave.defaults({from: governance})
-    amount = new BN('30000000')
+    // let response = await pTokenAave.defaults({from: governance})
+    // amount = new BN('30000000')
 
-    let res2 = await coreToken.methods.approve(
-      pToken.address,
-      amount.toString()
-    ).send({ from: governance });
-    let response1 = await pToken.depositCoreTokens(amount);
-    console.log(response1);
+    // let res2 = await coreToken.methods.approve(
+    //   pToken.address,
+    //   amount.toString()
+    // ).send({ from: governance });
+    // let response1 = await pToken.depositCoreTokens(amount);
+    // console.log(response1);
 
     // let res2 = await underlyingToken.approve(
     //   pToken.address,
@@ -80,6 +81,9 @@ module.exports = async function (config) {
 
     // let response1 = await pToken.withdraw(amount);
     // console.log(response1);
+
+    let response1 = await shieldToken.withdraw(amount);
+    console.log(response1);
 
   } catch(e) {
     console.error(e)
