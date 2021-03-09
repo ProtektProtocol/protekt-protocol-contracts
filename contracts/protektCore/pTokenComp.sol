@@ -6,28 +6,25 @@ import "@openzeppelin/contracts/utils/Address.sol";
 import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20Detailed.sol";
-import "./helpers/HarvestRewardsAaveUsdcManual.sol";
+import "./helpers/HarvestRewardsCompoundDaiManual.sol";
 import "../claimsManagers/interfaces/IClaimsManagerCore.sol";
 
-contract pTokenAave is
+contract pToken is
     ERC20,
     ERC20Detailed,
-    HarvestRewardsAaveUsdcManual
+    HarvestRewardsCompoundDaiManual
 {
     using SafeERC20 for IERC20;
     using Address for address;
     using SafeMath for uint256;
 
     IERC20 public depositToken;
-    address public shieldTokenAddress;
 
     address public feeModel;
     address public governance;
     IClaimsManagerCore public claimsManager;
     bool public isCapped;
     uint256 public maxDeposit;
-
-    uint256 public balanceLastHarvest;
 
     constructor(address _depositToken, address _feeModel, address _claimsManager)
         public
@@ -53,22 +50,9 @@ contract pTokenAave is
         governance = _governance;
     }
 
-    function setShieldToken(address _shieldTokenAddress) public {
+    function setFeeModel(address _feeModel) public {
         require(msg.sender == governance, "!governance");
-        shieldTokenAddress = _shieldTokenAddress;
-    }
-
-    function depositCoreTokens(uint256 _amount) public {
-        require(claimsManager.isReady(),'!Ready');
-        
-        // harvestRewards(); - does this need to be here? will just increase gas
-
-        uint256 _before = depositToken.balanceOf(address(this));
-        
-        // Deposit coreTokens into Aave and then deposit underlyingTokens into pToken
-        uint256 _after = super.depositCoreTokens(_amount, msg.sender);
-
-        _deposit(_after,_before,msg.sender);
+        feeModel = _feeModel;
     }
 
     function depositAll() external {
@@ -76,27 +60,6 @@ contract pTokenAave is
     }
 
     function deposit(uint256 _amount) public {
-        // Rewards are harvested for the current block before deposit
-        // harvestRewards(depositToken, balanceLastHarvest, address(shieldToken));
-        harvestRewards();
-
-        _deposit(_amount);
-    }
-
-     function _deposit(uint256 _after, uint256 _before, address depositor) internal {
-        uint256 _pool = balance();
-        uint256 _amount = _after.sub(_before);
-        uint256 shares = 0;
-        if (totalSupply() == 0) {
-            shares = _amount;
-        } else {
-            shares = (_amount.mul(totalSupply())).div(_pool);
-        }
-        _mint(depositor, shares);
-    }
-
-
-    function _deposit(uint256 _amount) internal {
         require(claimsManager.isReady(),'!Ready');
         uint256 _pool = balance();
         uint256 _before = depositToken.balanceOf(address(this));
@@ -113,7 +76,39 @@ contract pTokenAave is
             shares = (_amount.mul(totalSupply())).div(_pool);
         }
         _mint(msg.sender, shares);
-        balanceLastHarvest = balance();
+    }
+
+
+    function _deposit(uint256 _after, uint256 _before, address depositor) internal {
+        uint256 _pool = balance();
+        uint256 _amount = _after.sub(_before);
+        uint256 shares = 0;
+        if (totalSupply() == 0) {
+            shares = _amount;
+        } else {
+            shares = (_amount.mul(totalSupply())).div(_pool);
+        }
+        _mint(depositor, shares);
+    }
+
+    function depositCoreTokens(uint256 _amount) public {
+        require(claimsManager.isReady(),'!Ready');
+        
+        // Rewards are harvested for the current block before deposit
+        
+        // harvestRewards(); - does this need to be here? will just increase gas
+
+        uint256 _before = depositToken.balanceOf(address(this));
+
+        // Deposit coreTokens into Compound and then deposit underlyingTokens into pToken
+        uint256 _after = super.depositCoreTokens(_amount, msg.sender);
+
+        if(isCapped){
+            require(_after <= maxDeposit, "Cap exceeded");
+        }
+
+        // now have the cDai amount they are going to deposit already in the contract 
+        _deposit(_after, _before, msg.sender);
     }
 
     function withdrawAll() external {
@@ -121,7 +116,7 @@ contract pTokenAave is
     }
 
     function harvestRewards() public {
-        super.harvestRewards(depositToken,shieldTokenAddress,balanceLastHarvest);
+        super.harvestRewards(feeModel);
     }
 
     function withdraw(uint256 _shares) public {
@@ -132,7 +127,6 @@ contract pTokenAave is
         _burn(msg.sender, _shares);
 
         depositToken.safeTransfer(msg.sender, r);
-        balanceLastHarvest = balance();
     }
 
     // Returns depositTokens per share price
