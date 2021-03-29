@@ -126,7 +126,7 @@ contract pTokenAave is
 
     function withdraw(uint256 _shares) public {
         // Rewards are harvested for the current block before withdrawal
-        harvestRewards();
+        // harvestRewards();
 
         uint256 r = (balance().mul(_shares)).div(totalSupply());
         _burn(msg.sender, _shares);
