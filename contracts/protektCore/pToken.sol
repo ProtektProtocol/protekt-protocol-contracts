@@ -95,8 +95,7 @@ contract pToken is
         require(claimsManager.isReady(),'!Ready');
         
         // Rewards are harvested for the current block before deposit
-        
-        harvestRewards(); //- this will break deposits on testnets
+        harvestRewards();
 
         uint256 _before = depositToken.balanceOf(address(this));
 

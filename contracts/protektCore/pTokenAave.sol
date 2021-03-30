@@ -59,14 +59,16 @@ contract pTokenAave is
     }
 
     function depositCoreTokens(uint256 _amount) public {
-        // Rewards are harvested for the current block before deposit
-        // harvestRewards(depositToken, balanceLastHarvest, address(shieldToken));
-        harvestRewards();
+        require(claimsManager.isReady(),'!Ready');
+        
+        // harvestRewards(); - does this need to be here? will just increase gas
 
+        uint256 _before = depositToken.balanceOf(address(this));
+        
         // Deposit coreTokens into Aave and then deposit underlyingTokens into pToken
-        super.depositCoreTokens(_amount, msg.sender);
+        uint256 _after = super.depositCoreTokens(_amount, msg.sender);
 
-        _deposit(_amount);
+        _deposit(_after,_before,msg.sender);
     }
 
     function depositAll() external {
@@ -80,6 +82,23 @@ contract pTokenAave is
 
         _deposit(_amount);
     }
+
+     function _deposit(uint256 _after, uint256 _before, address depositor) internal {
+        if(isCapped){
+            require(_after <= maxDeposit,"Cap exceeded");
+        }
+        uint256 _pool = balance();
+        uint256 _amount = _after.sub(_before);
+        
+        uint256 shares = 0;
+        if (totalSupply() == 0) {
+            shares = _amount;
+        } else {
+            shares = (_amount.mul(totalSupply())).div(_pool);
+        }
+        _mint(depositor, shares);
+    }
+
 
     function _deposit(uint256 _amount) internal {
         require(claimsManager.isReady(),'!Ready');
@@ -106,12 +125,12 @@ contract pTokenAave is
     }
 
     function harvestRewards() public {
-        super.harvestRewards();
+        super.harvestRewards(depositToken,shieldTokenAddress,balanceLastHarvest);
     }
 
     function withdraw(uint256 _shares) public {
         // Rewards are harvested for the current block before withdrawal
-        harvestRewards();
+        // harvestRewards();
 
         uint256 r = (balance().mul(_shares)).div(totalSupply());
         _burn(msg.sender, _shares);
