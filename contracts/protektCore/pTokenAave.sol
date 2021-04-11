@@ -61,7 +61,7 @@ contract pTokenAave is
     function depositCoreTokens(uint256 _amount) public {
         require(claimsManager.isReady(),'!Ready');
         
-        // harvestRewards(); - does this need to be here? will just increase gas
+        harvestRewards(); // - does this need to be here? will just increase gas
 
         uint256 _before = depositToken.balanceOf(address(this));
         

@@ -116,15 +116,6 @@ const web3 = new Web3(new Web3.providers.WebsocketProvider(WS_ENDPOINT));
   }catch(e){
     console.log(e)
   }
-  // check results
-  
-  // uncap it 
-
-  // check it still works
-  
-
-
-  // provider.engine.stop();
    
 })();
 
