@@ -25,15 +25,10 @@ contract HarvestRewardsAaveUsdcManual {
 
     uint256 shieldFee = 20;
 
+
     // IERC20 public depositToken;
     // address public shieldTokenAddress;
     // uint256 public balanceLastHarvest;
-
-    // uint256 shieldFee = 20;
-
-    IERC20 public depositToken;
-    address public shieldTokenAddress;
-    uint256 public balanceLastHarvest;
 
     event HarvestRewards(uint256 amount);
 

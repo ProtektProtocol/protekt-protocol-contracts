@@ -77,7 +77,6 @@ contract pTokenAave is
 
     function deposit(uint256 _amount) public {
         // Rewards are harvested for the current block before deposit
-        // harvestRewards(depositToken, balanceLastHarvest, address(shieldToken));
         harvestRewards();
 
         _deposit(_amount);
@@ -130,7 +129,7 @@ contract pTokenAave is
 
     function withdraw(uint256 _shares) public {
         // Rewards are harvested for the current block before withdrawal
-        // harvestRewards();
+        harvestRewards();
 
         uint256 r = (balance().mul(_shares)).div(totalSupply());
         _burn(msg.sender, _shares);

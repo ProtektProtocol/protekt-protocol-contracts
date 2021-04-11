@@ -1,3 +1,5 @@
+// truffle deploy --network kovan --f 2 --skip-dry-run --reset
+
 const ReserveToken = artifacts.require("ReserveToken");
 const UnderlyingToken = artifacts.require("UnderlyingToken");
 const CoreToken = artifacts.require("UnderlyingToken")

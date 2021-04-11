@@ -34,16 +34,19 @@ contract HarvestRewardsCompoundDaiManual {
      * @dev Collects rewards from deposited tokens and sends to the feeModel
      */
     function harvestRewards(address _feeModel) public {
+        // init market
+        cToken[] memory cTokens = new cToken[](1);
+        cTokens[0] = cToken(cDaiTokenAddress);
+
         //Claim COMP from comptroller
         ComptrollerInterface COMPtroller = ComptrollerInterface(compComptroller);
-        COMPtroller.claimComp(address(this));
+        COMPtroller.claimComp(address(this),cTokens);
 
         // Transfer COMP to feeModel
         uint256 amount = IERC20(comp).balanceOf(address(this));
         IERC20(comp).safeTransfer(_feeModel, amount);
 
         emit HarvestRewards(amount);
-        // emit HarvestRewards(0);
     }
 
     /**

@@ -1,3 +1,5 @@
+import './cToken.sol';
+
 pragma solidity ^0.5.16;
 
 contract ComptrollerInterface {
@@ -5,7 +7,7 @@ contract ComptrollerInterface {
     bool public constant isComptroller = true;
 
 
-    function claimComp(address holder) public;
+    function claimComp(address holder, cToken[] memory cTokens) public;
 
     /*** Assets You Are In ***/
 
