@@ -6,13 +6,15 @@ import "@openzeppelin/contracts/utils/Address.sol";
 import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20Detailed.sol";
+import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "./helpers/HarvestRewardsCompoundDaiManual.sol";
 import "../claimsManagers/interfaces/IClaimsManagerCore.sol";
 
 contract pToken is
     ERC20,
     ERC20Detailed,
-    HarvestRewardsCompoundDaiManual
+    HarvestRewardsCompoundDaiManual,
+    ReentrancyGuard
 {
     using SafeERC20 for IERC20;
     using Address for address;
@@ -33,6 +35,7 @@ contract pToken is
             string(abi.encodePacked("p", ERC20Detailed(_depositToken).symbol())),
             ERC20Detailed(_depositToken).decimals()
         )
+        ReentrancyGuard()
     {
         depositToken = IERC20(_depositToken);
         feeModel = _feeModel;
@@ -55,11 +58,7 @@ contract pToken is
         feeModel = _feeModel;
     }
 
-    function depositAll() external {
-        deposit(depositToken.balanceOf(msg.sender));
-    }
-
-    function deposit(uint256 _amount) public {
+    function deposit(uint256 _amount) nonReentrant() public {
         require(claimsManager.isReady(),'!Ready');
         uint256 _pool = balance();
         uint256 _before = depositToken.balanceOf(address(this));
@@ -75,7 +74,12 @@ contract pToken is
         } else {
             shares = (_amount.mul(totalSupply())).div(_pool);
         }
+     
         _mint(msg.sender, shares);
+    }
+
+    function depositAll() external {
+        deposit(depositToken.balanceOf(msg.sender));
     }
 
 
@@ -91,7 +95,7 @@ contract pToken is
         _mint(depositor, shares);
     }
 
-    function depositCoreTokens(uint256 _amount) public {
+    function depositCoreTokens(uint256 _amount) nonReentrant() public {
         require(claimsManager.isReady(),'!Ready');
         
         // Rewards are harvested for the current block before deposit
@@ -110,7 +114,7 @@ contract pToken is
         _deposit(_after, _before, msg.sender);
     }
 
-    function withdrawAll() external {
+    function withdrawAll() external{
         withdraw(balanceOf(msg.sender));
     }
 
@@ -118,7 +122,7 @@ contract pToken is
         super.harvestRewards(feeModel);
     }
 
-    function withdraw(uint256 _shares) public {
+    function withdraw(uint256 _shares) nonReentrant() public {
         // Rewards are harvested for the current block before withdrawal
         harvestRewards();
 
