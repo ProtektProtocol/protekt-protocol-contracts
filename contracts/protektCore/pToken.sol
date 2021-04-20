@@ -114,7 +114,7 @@ contract pToken is
         _deposit(_after, _before, msg.sender);
     }
 
-    function withdrawAll() external{
+    function withdrawAll() external {
         withdraw(balanceOf(msg.sender));
     }
 
