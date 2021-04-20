@@ -14,14 +14,14 @@ contract HarvestRewardsAaveUsdcManual {
     using SafeMath for uint256;
 
     // Kovan
-    address public constant lendingPoolAddress = address(0xE0fBa4Fc209b4948668006B2bE61711b7f465bAe);
-    address public constant usdcTokenAddress = address(0xe22da380ee6B445bb8273C81944ADEB6E8450422);
-    address public constant ausdcTokenAddress = address(0xe12AFeC5aa12Cf614678f9bFeeB98cA9Bb95b5B0);
+    // address public constant lendingPoolAddress = address(0xE0fBa4Fc209b4948668006B2bE61711b7f465bAe);
+    // address public constant usdcTokenAddress = address(0xe22da380ee6B445bb8273C81944ADEB6E8450422);
+    // address public constant ausdcTokenAddress = address(0xe12AFeC5aa12Cf614678f9bFeeB98cA9Bb95b5B0);
 
     // Mainnet
-    // address public constant lendingPoolAddress = address(0x7d2768dE32b0b80b7a3454c06BdAc94A69DDc7A9);
-    // address public constant usdcTokenAddress = address(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48);
-    //address public constant ausdcTokenAddress = address(0x9ba00d6856a4edf4665bca2c2309936572473b7e);
+    address public constant lendingPoolAddress = address(0x7d2768dE32b0b80b7a3454c06BdAc94A69DDc7A9);
+    address public constant usdcTokenAddress = address(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48);
+    address public constant ausdcTokenAddress = address(0x9ba00d6856a4edf4665bca2c2309936572473b7e);
 
     uint256 shieldFee = 20;
 

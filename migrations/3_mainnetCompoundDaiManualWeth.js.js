@@ -1,5 +1,5 @@
-// truffle deploy --network kovan --f 4 --to 4 --skip-dry-run --reset
-const pToken = artifacts.require("pTokenAave");
+// truffle deploy --network kovan --f 5 --skip-dry-run --reset
+const pToken = artifacts.require("pToken");
 const Controller = artifacts.require("Controller");
 const ShieldStrategy = artifacts.require("StrategyHodl");
 const ClaimsManager = artifacts.require("ClaimsManagerSingleAccount");
@@ -10,56 +10,56 @@ module.exports = async function (deployer, network, accounts) {
   let shieldController, shieldStrategy, shieldToken, claimsManager
   let underlyingToken, reserveToken
 
-  // Kovan USDC
-  let coreTokenAddress = "0xe22da380ee6b445bb8273c81944adeb6e8450422"
-  // Kovan aUSDC
-  let underlyingTokenAddress = "0xe12afec5aa12cf614678f9bfeeb98ca9bb95b5b0"
-  // Kovan weth
-  let reserveTokenAddress = "0xd0A1E359811322d97991E03f863a0C30C2cF029C"
+
+  // Mainnet cDAI address
+  let underlyingTokenAddress = "0x5d3a536e4d6dbd6114cc1ead35777bab948e3643"
+
+  // Mainnet WETH address
+  let reserveTokenAddress = "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
 
   // 1) Check correct network =================================================
-  if(network!=="kovan"){
-      throw "********** \n !kovan network \n ****************"
+  if(network!=="mainnet"){
+      throw "********** \n !mainnet network \n ****************"
   }
   // ===================================================================
 
 
   // 2) Launch ClaimsManager (ClaimsManagerSingleAccount) ==============
-  claimsManager = await ClaimsManager.new();
+  claimsManager = await deployer.deploy(ClaimsManager);
   // ===================================================================
 
+  
   // 3) Launch pToken =====================================================
   // Fee model contract = governance address
-  protektToken = await pToken.new(underlyingTokenAddress, accounts[0], claimsManager.address);
+  protektToken = await deployer.deploy(pToken, underlyingTokenAddress, accounts[0], claimsManager.address);
   // ===================================================================
-
 
 
   // 4) Launch Investment Strategy (StrategyHodl) ======================
-  shieldController = await Controller.new(reserveTokenAddress);
-  shieldStrategy = await ShieldStrategy.new(shieldController.address);
-  await shieldController.approveStrategy(reserveTokenAddress, shieldStrategy.address);
-  await shieldController.setStrategy(reserveTokenAddress, shieldStrategy.address);
+  shieldController = await deployer.deploy(Controller, reserveTokenAddress);
+  shieldStrategy = await deployer.deploy(ShieldStrategy, shieldController.address);
+  await shieldController.approveStrategy(reserveTokenAddress, shieldStrategy.address)
+  await shieldController.setStrategy(reserveTokenAddress, shieldStrategy.address)
   // ===================================================================
 
 
 
   // 5) Launch ShieldToken =============================================
-  shieldToken = await ShieldToken.new(
+  shieldToken = await deployer.deploy(
+      ShieldToken,
       protektToken.address,
       reserveTokenAddress,
       shieldController.address,
       claimsManager.address
     );
-  await claimsManager.setShieldToken(shieldToken.address);
-  await protektToken.setShieldToken(shieldToken.address);
+  await claimsManager.setShieldToken(shieldToken.address)
   // ===================================================================
 
 
     
   // Output ==============================================================
-  console.log('# Kovan aUSDC / WETH Tokens')
-  console.log('Underlying Token (aUSDC): ', underlyingTokenAddress)
+  console.log('# Kovan cDAI / WETH Tokens')
+  console.log('Underlying Token (cDAI): ', underlyingTokenAddress)
   console.log('Reserve Token (WETH): ', reserveTokenAddress)
   console.log('-----')
   console.log('-----')
