@@ -6,14 +6,19 @@ import "@openzeppelin/contracts/utils/Address.sol";
 import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20Detailed.sol";
-import "@openzeppelin/contracts/ownership/Ownable.sol";
+import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "../../interfaces/yearn/IController.sol";
 import "../claimsManagers/interfaces/IClaimsManagerCore.sol";
 import "../protektCore/interfaces/IProtektToken.sol";
 import "../utils/Pausable.sol";
 
 
-contract ShieldToken is ERC20, ERC20Detailed, Pausable {
+contract ShieldToken is 
+    ERC20, 
+    ERC20Detailed, 
+    Pausable,
+    ReentrancyGuard 
+{
     using SafeERC20 for IERC20;
     using Address for address;
     using SafeMath for uint256;
@@ -38,6 +43,7 @@ contract ShieldToken is ERC20, ERC20Detailed, Pausable {
             string(abi.encodePacked("sh", ERC20Detailed(_protektToken).symbol())),
             ERC20Detailed(_depositToken).decimals()
         )
+        ReentrancyGuard()
     {
         protektToken = IProtektToken(_protektToken);
         depositToken = IERC20(_depositToken);
@@ -75,7 +81,7 @@ contract ShieldToken is ERC20, ERC20Detailed, Pausable {
         deposit(depositToken.balanceOf(msg.sender));
     }
 
-    function deposit(uint256 _amount) public {
+    function deposit(uint256 _amount) nonReentrant() public {
         uint256 _pool = balance();
         uint256 _before = depositToken.balanceOf(address(this));
         if(isCapped){
@@ -98,7 +104,7 @@ contract ShieldToken is ERC20, ERC20Detailed, Pausable {
     }
 
     // No rebalance implementation for lower fees and faster swaps
-    function withdraw(uint256 _shares) public whenNotPaused {
+    function withdraw(uint256 _shares) nonReentrant() public whenNotPaused {
         uint256 r = (balance().mul(_shares)).div(totalSupply());
         _burn(msg.sender, _shares);
 

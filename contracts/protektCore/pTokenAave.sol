@@ -6,13 +6,15 @@ import "@openzeppelin/contracts/utils/Address.sol";
 import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20Detailed.sol";
+import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "./helpers/HarvestRewardsAaveUsdcManual.sol";
 import "../claimsManagers/interfaces/IClaimsManagerCore.sol";
 
 contract pTokenAave is
     ERC20,
     ERC20Detailed,
-    HarvestRewardsAaveUsdcManual
+    HarvestRewardsAaveUsdcManual,
+    ReentrancyGuard
 {
     using SafeERC20 for IERC20;
     using Address for address;
@@ -36,6 +38,7 @@ contract pTokenAave is
             string(abi.encodePacked("p", ERC20Detailed(_depositToken).symbol())),
             ERC20Detailed(_depositToken).decimals()
         )
+        ReentrancyGuard()
     {
         depositToken = IERC20(_depositToken);
         feeModel = _feeModel;
@@ -58,7 +61,7 @@ contract pTokenAave is
         shieldTokenAddress = _shieldTokenAddress;
     }
 
-    function depositCoreTokens(uint256 _amount) public {
+    function depositCoreTokens(uint256 _amount) nonReentrant() public {
         require(claimsManager.isReady(),'!Ready');
         
         harvestRewards(); // - does this need to be here? will just increase gas
@@ -75,7 +78,7 @@ contract pTokenAave is
         deposit(depositToken.balanceOf(msg.sender));
     }
 
-    function deposit(uint256 _amount) public {
+    function deposit(uint256 _amount) nonReentrant() public {
         // Rewards are harvested for the current block before deposit
         harvestRewards();
 
@@ -127,7 +130,7 @@ contract pTokenAave is
         super.harvestRewards(depositToken,shieldTokenAddress,balanceLastHarvest);
     }
 
-    function withdraw(uint256 _shares) public {
+    function withdraw(uint256 _shares) nonReentrant() public  {
         // Rewards are harvested for the current block before withdrawal
         harvestRewards();
 

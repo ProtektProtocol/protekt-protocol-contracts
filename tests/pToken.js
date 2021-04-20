@@ -151,7 +151,7 @@ contract("pToken", async accounts => {
 
 
     /*  
-      Below does not work
+      Below does not work on testnet
     */
     it("should be harvest rewards when withdrawing", async () => {
       amount = new BN('10000000000000000000')

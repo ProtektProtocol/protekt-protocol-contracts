@@ -7,6 +7,11 @@ const { BN, expectEvent, expectRevert } = require('@openzeppelin/test-helpers');
 const should = require("chai").should();
 const { expect } = require('chai');
 
+
+/*
+    From DeFI TRAIN I believe - should be reworked
+*/
+
 contract("referralToken", async accounts => {
   let governance = accounts[0];
   let newUser = accounts[1];
