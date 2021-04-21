@@ -14,7 +14,7 @@ module.exports = async function (deployer, network, accounts) {
   let coreTokenAddress = "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
 
   // Mainnet aUSDC
-  let underlyingTokenAddress = "0xbcca60bb61934080951369a648fb03df4f96263c"
+  let underlyingTokenAddress = "0xBcca60bB61934080951369a648Fb03DF4F96263C"
 
   // Mainnet weth
   let reserveTokenAddress = "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"

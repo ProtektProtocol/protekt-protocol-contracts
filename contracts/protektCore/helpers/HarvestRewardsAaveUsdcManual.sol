@@ -21,7 +21,7 @@ contract HarvestRewardsAaveUsdcManual {
     // Mainnet
     address public constant lendingPoolAddress = address(0x7d2768dE32b0b80b7a3454c06BdAc94A69DDc7A9);
     address public constant usdcTokenAddress = address(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48);
-    address public constant ausdcTokenAddress = address(0x9ba00d6856a4edf4665bca2c2309936572473b7e);
+    address public constant ausdcTokenAddress = address(0xBcca60bB61934080951369a648Fb03DF4F96263C);
 
     uint256 shieldFee = 20;
 
