@@ -98,21 +98,24 @@ contract pTokenAave is
         _deposit(_amount);
     }
 
-     function _deposit(uint256 _after, uint256 _before, address depositor) internal {
-        if(isCapped){
-            require(_after <= maxDeposit,"Cap exceeded");
-        }
-        uint256 _pool = balance();
-        uint256 _amount = _after.sub(_before);
+    /*
+        Deprecated
+    */
+    //  function _deposit(uint256 _after, uint256 _before, address depositor) internal {
+    //     if(isCapped){
+    //         require(_after <= maxDeposit,"Cap exceeded");
+    //     }
+    //     uint256 _pool = balance();
+    //     uint256 _amount = _after.sub(_before);
         
-        uint256 shares = 0;
-        if (totalSupply() == 0) {
-            shares = _amount;
-        } else {
-            shares = (_amount.mul(totalSupply())).div(_pool);
-        }
-        _mint(depositor, shares);
-    }
+    //     uint256 shares = 0;
+    //     if (totalSupply() == 0) {
+    //         shares = _amount;
+    //     } else {
+    //         shares = (_amount.mul(totalSupply())).div(_pool);
+    //     }
+    //     _mint(depositor, shares);
+    // }
 
 
     
