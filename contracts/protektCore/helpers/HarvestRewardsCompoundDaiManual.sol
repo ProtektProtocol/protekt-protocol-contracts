@@ -17,16 +17,16 @@ contract HarvestRewardsCompoundDaiManual {
     // address public feeModel;
 
     // Mainnet
-    // address public constant compComptroller = address(0x3d9819210A31b4961b30EF54bE2aeD79B9c9Cd3B);
-    // address public constant comp = address(0xc00e94Cb662C3520282E6f5717214004A7f26888);
-    // address public constant cDaiTokenAddress = address(0x5d3a536E4D6DbD6114cc1Ead35777bAB948E3643); 
-    // address public constant daiTokenAddress = address(0x6B175474E89094C44Da98b954EedeAC495271d0F); 
+    address public constant compComptroller = address(0x3d9819210A31b4961b30EF54bE2aeD79B9c9Cd3B);
+    address public constant comp = address(0xc00e94Cb662C3520282E6f5717214004A7f26888);
+    address public constant cDaiTokenAddress = address(0x5d3a536E4D6DbD6114cc1Ead35777bAB948E3643); 
+    address public constant daiTokenAddress = address(0x6B175474E89094C44Da98b954EedeAC495271d0F); 
 
     // Kovan
-    address public constant compComptroller = address(0x5eAe89DC1C671724A672ff0630122ee834098657);
-    address public constant comp = address(0x61460874a7196d6a22D1eE4922473664b3E95270);
-    address public constant cDaiTokenAddress = address(0xF0d0EB522cfa50B716B3b1604C4F0fA6f04376AD); 
-    address public constant daiTokenAddress = address(0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa);
+    // address public constant compComptroller = address(0x5eAe89DC1C671724A672ff0630122ee834098657);
+    // address public constant comp = address(0x61460874a7196d6a22D1eE4922473664b3E95270);
+    // address public constant cDaiTokenAddress = address(0xF0d0EB522cfa50B716B3b1604C4F0fA6f04376AD); 
+    // address public constant daiTokenAddress = address(0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa);
 
     event HarvestRewards(uint256 amount);
 

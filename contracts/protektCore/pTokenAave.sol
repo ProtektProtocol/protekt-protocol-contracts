@@ -63,21 +63,34 @@ contract pTokenAave is
 
     function depositCoreTokens(uint256 _amount) nonReentrant() public {
         require(claimsManager.isReady(),'!Ready');
-        
-        harvestRewards(); // - does this need to be here? will just increase gas
 
+        harvestRewards(); 
+
+        uint256 _pool = balance();
         uint256 _before = depositToken.balanceOf(address(this));
-        
-        // Deposit coreTokens into Aave and then deposit underlyingTokens into pToken
-        uint256 _after = super.depositCoreTokens(_amount, msg.sender);
-
-        _deposit(_after,_before,msg.sender);
+        if(isCapped){
+            require((_before + _amount) <= maxDeposit,"Cap exceeded");
+        }
+        super.depositCoreTokens(_amount, msg.sender);
+        uint256 _after = depositToken.balanceOf(address(this));
+        _amount = _after.sub(_before); // Additional check for deflationary depositTokens
+        uint256 shares = 0;
+        if (totalSupply() == 0) {
+            shares = _amount;
+        } else {
+            shares = (_amount.mul(totalSupply())).div(_pool);
+        }
+        _mint(msg.sender, shares);
+        balanceLastHarvest = balance();
     }
 
     function depositAll() external {
         deposit(depositToken.balanceOf(msg.sender));
     }
 
+    /*
+        Deposits aUSDC
+    */
     function deposit(uint256 _amount) nonReentrant() public {
         // Rewards are harvested for the current block before deposit
         harvestRewards();
@@ -85,23 +98,27 @@ contract pTokenAave is
         _deposit(_amount);
     }
 
-     function _deposit(uint256 _after, uint256 _before, address depositor) internal {
-        if(isCapped){
-            require(_after <= maxDeposit,"Cap exceeded");
-        }
-        uint256 _pool = balance();
-        uint256 _amount = _after.sub(_before);
+    /*
+        Deprecated
+    */
+    //  function _deposit(uint256 _after, uint256 _before, address depositor) internal {
+    //     if(isCapped){
+    //         require(_after <= maxDeposit,"Cap exceeded");
+    //     }
+    //     uint256 _pool = balance();
+    //     uint256 _amount = _after.sub(_before);
         
-        uint256 shares = 0;
-        if (totalSupply() == 0) {
-            shares = _amount;
-        } else {
-            shares = (_amount.mul(totalSupply())).div(_pool);
-        }
-        _mint(depositor, shares);
-    }
+    //     uint256 shares = 0;
+    //     if (totalSupply() == 0) {
+    //         shares = _amount;
+    //     } else {
+    //         shares = (_amount.mul(totalSupply())).div(_pool);
+    //     }
+    //     _mint(depositor, shares);
+    // }
 
 
+    
     function _deposit(uint256 _amount) internal {
         require(claimsManager.isReady(),'!Ready');
         uint256 _pool = balance();
