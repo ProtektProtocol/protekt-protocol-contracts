@@ -60,8 +60,5 @@ contract HarvestRewardsAaveUsdcManual {
       // LendingPool.deposit(address asset, uint256 amount, address onBehalfOf, uint16 shieldCode)
       ILendingPool(lendingPoolAddress).deposit(usdcTokenAddress, _amount, address(this), 0);
 
-      uint256 _after = IERC20(ausdcTokenAddress).balanceOf(address(this));
-
-      return _after;
     }
 }
